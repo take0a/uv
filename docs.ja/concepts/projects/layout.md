@@ -1,17 +1,14 @@
-# Project structure and files
+# プロジェクト構造とファイル
 
-## The `pyproject.toml`
+## `pyproject.toml`
 
-Python project metadata is defined in a
-[`pyproject.toml`](https://packaging.python.org/en/latest/guides/writing-pyproject-toml/) file. uv
-requires this file to identify the root directory of a project.
+Python プロジェクトのメタデータは [`pyproject.toml`](https://packaging.python.org/en/latest/guides/writing-pyproject-toml/) ファイルで定義されます。uv では、プロジェクトのルート ディレクトリを識別するためにこのファイルが必要です。
 
 !!! tip
 
-    `uv init` can be used to create a new project. See [Creating projects](./init.md) for
-    details.
+    `uv init` は新しいプロジェクトを作成するために使用できます。詳細については、[プロジェクトの作成](./init.md)を参照してください。
 
-A minimal project definition includes a name and version:
+最小限のプロジェクト定義には、名前とバージョンが含まれます:
 
 ```toml title="pyproject.toml"
 [project]
@@ -19,66 +16,42 @@ name = "example"
 version = "0.1.0"
 ```
 
-Additional project metadata and configuration includes:
+追加のプロジェクトメタデータと構成には以下が含まれます:
 
-- [Python version requirement](./config.md#python-version-requirement)
-- [Dependencies](./dependencies.md)
-- [Build system](./config.md#build-systems)
-- [Entry points (commands)](./config.md#entry-points)
+- [Python のバージョン要件](./config.md#python-version-requirement)
+- [依存関係](./dependencies.md)
+- [ビルドシステム](./config.md#build-systems)
+- [エントリポイント（コマンド）](./config.md#entry-points)
 
-## The project environment
+## プロジェクト環境
 
-When working on a project with uv, uv will create a virtual environment as needed. While some uv
-commands will create a temporary environment (e.g., `uv run --isolated`), uv also manages a
-persistent environment with the project and its dependencies in a `.venv` directory next to the
-`pyproject.toml`. It is stored inside the project to make it easy for editors to find — they need
-the environment to give code completions and type hints. It is not recommended to include the
-`.venv` directory in version control; it is automatically excluded from `git` with an internal
-`.gitignore` file.
+uv を使用してプロジェクトで作業する場合、uv は必要に応じて仮想環境を作成します。一部の uv コマンドは一時的な環境を作成しますが (例: `uv run --isolated`)、uv はプロジェクトとその依存関係を含む永続的な環境を `pyproject.toml` の隣の `.venv` ディレクトリで管理します。これは、エディターが簡単に見つけられるようにプロジェクト内に格納されます。エディターは、コード補完や型のヒントを提供するために環境を必要とします。`.venv` ディレクトリをバージョン管理に含めることは推奨されません。内部の `.gitignore` ファイルによって `git` から自動的に除外されます。
 
-To run a command in the project environment, use `uv run`. Alternatively the project environment can
-be activated as normal for a virtual environment.
+プロジェクト環境でコマンドを実行するには、`uv run` を使用します。あるいは、仮想環境の場合と同じようにプロジェクト環境をアクティブ化することもできます。
 
-When `uv run` is invoked, it will create the project environment if it does not exist yet or ensure
-it is up-to-date if it exists. The project environment can also be explicitly created with
-`uv sync`. See the [locking and syncing](./sync.md) documentation for details.
+`uv run` が呼び出されると、プロジェクト環境がまだ存在しない場合はそれを作成し、存在する場合は最新の状態であることを確認します。プロジェクト環境は、`uv sync` を使用して明示的に作成することもできます。詳細については、[ロックと同期](./sync.md) のドキュメントを参照してください。
 
-It is _not_ recommended to modify the project environment manually, e.g., with `uv pip install`. For
-project dependencies, use `uv add` to add a package to the environment. For one-off requirements,
-use [`uvx`](../../guides/tools.md) or
-[`uv run --with`](./run.md#requesting-additional-dependencies).
+プロジェクト環境を手動で変更することは推奨されません (例: `uv pip install`)。プロジェクトの依存関係については、`uv add` を使用して環境にパッケージを追加します。1 回限りの要件については、[`uvx`](../../guides/tools.md) または [`uv run --with`](./run.md#requesting-additional-dependencies) を使用します。
 
 !!! tip
 
-    If you don't want uv to manage the project environment, set [`managed = false`](../../reference/settings.md#managed)
-    to disable automatic locking and syncing of the project. For example:
+    uv でプロジェクト環境を管理したくない場合は、[`managed = false`](../../reference/settings.md#managed) を設定して、プロジェクトの自動ロックと同期を無効にします。例:
 
     ```toml title="pyproject.toml"
     [tool.uv]
     managed = false
     ```
 
-## The lockfile
+## ロックファイル
 
-uv creates a `uv.lock` file next to the `pyproject.toml`.
+uv は `pyproject.toml` の横に `uv.lock` ファイルを作成します。
 
-`uv.lock` is a _universal_ or _cross-platform_ lockfile that captures the packages that would be
-installed across all possible Python markers such as operating system, architecture, and Python
-version.
+`uv.lock` は、オペレーティング システム、アーキテクチャ、Python バージョンなど、考えられるすべての Python マーカーにわたってインストールされるパッケージをキャプチャする _ユニバーサル_ または _クロスプラットフォーム_ のロックファイルです。
 
-Unlike the `pyproject.toml`, which is used to specify the broad requirements of your project, the
-lockfile contains the exact resolved versions that are installed in the project environment. This
-file should be checked into version control, allowing for consistent and reproducible installations
-across machines.
+プロジェクトの幅広い要件を指定するために使用される `pyproject.toml` とは異なり、ロックファイルにはプロジェクト環境にインストールされている解決済みの正確なバージョンが含まれています。このファイルはバージョン管理にチェックインして、マシン間で一貫性があり再現可能なインストールを可能にする必要があります。
 
-A lockfile ensures that developers working on the project are using a consistent set of package
-versions. Additionally, it ensures when deploying the project as an application that the exact set
-of used package versions is known.
+ロックファイルにより、プロジェクトで作業する開発者が一貫したパッケージ バージョン セットを使用していることが保証されます。さらに、プロジェクトをアプリケーションとして展開するときに、使用されているパッケージ バージョンの正確なセットがわかっていることが保証されます。
 
-The lockfile is [automatically created and updated](./sync.md#automatic-lock-and-sync) during uv
-invocations that use the project environment, i.e., `uv sync` and `uv run`. The lockfile may also be
-explicitly updated using `uv lock`.
+ロックファイルは、プロジェクト環境を使用する uv 呼び出し (つまり、`uv sync` および `uv run`) 中に [自動的に作成および更新](./sync.md#automatic-lock-and-sync) されます。ロックファイルは、`uv lock` を使用して明示的に更新することもできます。
 
-`uv.lock` is a human-readable TOML file but is managed by uv and should not be edited manually.
-There is no Python standard for lockfiles at this time, so the format of this file is specific to uv
-and not usable by other tools.
+`uv.lock` は人間が読める TOML ファイルですが、uv によって管理されており、手動で編集しないでください。現時点ではロックファイル用の Python 標準がないため、このファイルの形式は uv に固有であり、他のツールでは使用できません。

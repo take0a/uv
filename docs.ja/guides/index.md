@@ -1,13 +1,12 @@
-# Guides overview
+# ガイドの概要
 
-Check out one of the core guides to get started:
+まずはコアガイドをチェックしてみましょう:
 
-- [Installing Python versions](./install-python.md)
-- [Running scripts and declaring dependencies](./scripts.md)
-- [Running and installing applications as tools](./tools.md)
-- [Creating and working on projects](./projects.md)
-- [Building and publishing packages](./package.md)
-- [Integrate uv with other software, e.g., Docker, GitHub, PyTorch, and more](./integration/index.md)
+- [Python の各バージョンのインストール](./install-python.md)
+- [スクリプトの実行と依存関係の宣言](./scripts.md)
+- [ツールとしてのアプリケーションの実行とインストール](./tools.md)
+- [プロジェクトの作成と作業](./projects.md)
+- [パッケージの構築と公開](./package.md)
+- [uv を Docker、GitHub、PyTorch などの他のソフトウェアと統合する](./integration/index.md)
 
-Or, explore the [concept documentation](../concepts/index.md) for comprehensive breakdown of each
-feature.
+または、[コンセプトドキュメント](../concepts/index.md)を参照して、各機能の包括的な明細を確認してください。

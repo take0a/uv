@@ -1,14 +1,14 @@
-# Getting started
+# はじめる
 
-To help you get started with uv, we'll cover a few important topics:
+uv を使い始めるにあたって、いくつかの重要なトピックを取り上げます:
 
-- [Installing uv](./installation.md)
-- [First steps after installation](./first-steps.md)
-- [An overview of uv's features](./features.md)
-- [How to get help](./help.md)
+- [uv をインストールする](./installation.md)
+- [インストール後の最初の手順](./first-steps.md)
+- [uv の機能の概要](./features.md)
+- [ヘルプを受ける方法](./help.md)
 
-Read on, or jump ahead to another section:
+読み進めるか、別のセクションに進んでください:
 
-- Get going quickly with [guides](../guides/index.md) for common workflows.
-- Learn more about the core [concepts](../concepts/index.md) in uv.
-- Use the [reference](../reference/index.md) documentation to find details about something specific.
+- 一般的なワークフローの[ガイド](../guides/index.md)を使用して、すぐに作業を開始できます。
+- uv のコア[コンセプト](../concepts/index.md)について詳しく学びます。
+- 特定の事柄についての詳細を見つけるには、[リファレンス](../reference/index.md)ドキュメントを使用してください。

@@ -1,109 +1,103 @@
-# Features
+# 特徴
 
-uv provides essential features for Python development — from installing Python and hacking on simple
-scripts to working on large projects that support multiple Python versions and platforms.
+uv は、Python のインストールや簡単なスクリプトのハッキングから、複数の Python バージョンとプラットフォームをサポートする大規模プロジェクトの作業まで、Python 開発に不可欠な機能を提供します。
 
-uv's interface can be broken down into sections, which are usable independently or together.
+uv のインターフェースはセクションに分割でき、各セクションは独立して、または一緒に使用できます。
 
-## Python versions
+## Python の各バージョン
 
-Installing and managing Python itself.
+Python 自体のインストールと管理。
 
-- `uv python install`: Install Python versions.
-- `uv python list`: View available Python versions.
-- `uv python find`: Find an installed Python version.
-- `uv python pin`: Pin the current project to use a specific Python version.
-- `uv python uninstall`: Uninstall a Python version.
+- `uv python install`: Python バージョンをインストールします。
+- `uv python list`: 利用可能な Python バージョンを表示します。
+- `uv python find`: インストールされている Python バージョンを見つけます。
+- `uv python pin`: 特定の Python バージョンを使用するように現在のプロジェクトを固定します。
+- `uv python uninstall`: Python バージョンをアンインストールします。
 
-See the [guide on installing Python](../guides/install-python.md) to get started.
+開始するには、[Python のインストールガイド](../guides/install-python.md)を参照してください。
 
-## Scripts
+## スクリプト
 
-Executing standalone Python scripts, e.g., `example.py`.
+スタンドアロンの Python スクリプト (例: `example.py`) を実行します。
 
-- `uv run`: Run a script.
-- `uv add --script`: Add a dependency to a script
-- `uv remove --script`: Remove a dependency from a script
+- `uv run`: スクリプトを実行します。
+- `uv add --script`: スクリプトに依存関係を追加する
+- `uv remove --script`: スクリプトから依存関係を削除する
 
-See the [guide on running scripts](../guides/scripts.md) to get started.
+開始するには、[スクリプトの実行に関するガイド](../guides/scripts.md)を参照してください。
 
-## Projects
+## プロジェクト
 
-Creating and working on Python projects, i.e., with a `pyproject.toml`.
+Python プロジェクト (つまり `pyproject.toml`) を作成して作業します。
 
-- `uv init`: Create a new Python project.
-- `uv add`: Add a dependency to the project.
-- `uv remove`: Remove a dependency from the project.
-- `uv sync`: Sync the project's dependencies with the environment.
-- `uv lock`: Create a lockfile for the project's dependencies.
-- `uv run`: Run a command in the project environment.
-- `uv tree`: View the dependency tree for the project.
-- `uv build`: Build the project into distribution archives.
-- `uv publish`: Publish the project to a package index.
+- `uv init`: 新しい Python プロジェクトを作成します。
+- `uv add`: プロジェクトに依存関係を追加します。
+- `uv remove`: プロジェクトから依存関係を削除します。
+- `uv sync`: プロジェクトの依存関係を環境と同期します。
+- `uv lock`: プロジェクトの依存関係のロックファイルを作成します。
+- `uv run`: プロジェクト環境でコマンドを実行します。
+- `uv tree`: プロジェクトの依存関係ツリーを表示します。
+- `uv build`: プロジェクトを配布アーカイブにビルドします。
+- `uv publish`: プロジェクトをパッケージ インデックスに公開します。
 
-See the [guide on projects](../guides/projects.md) to get started.
+開始するには、[プロジェクトに関するガイド](../guides/projects.md)を参照してください。
 
-## Tools
+## ツール
 
-Running and installing tools published to Python package indexes, e.g., `ruff` or `black`.
+Python パッケージ インデックスに公開されているツール (例: `ruff` または `black`) を実行およびインストールします。
 
-- `uvx` / `uv tool run`: Run a tool in a temporary environment.
-- `uv tool install`: Install a tool user-wide.
-- `uv tool uninstall`: Uninstall a tool.
-- `uv tool list`: List installed tools.
-- `uv tool update-shell`: Update the shell to include tool executables.
+- `uvx` / `uv tool run`: 一時的な環境でツールを実行します。
+- `uv tool install`: ユーザー全体にツールをインストールします。
+- `uv tool uninstall`: ツールをアンインストールします。
+- `uv tool list`: インストールされているツールを一覧表示します。
+- `uv tool update-shell`: ツールの実行可能ファイルを含めるようにシェルを更新します。
 
-See the [guide on tools](../guides/tools.md) to get started.
+開始するには、[ツールに関するガイド](../guides/tools.md)を参照してください。
 
-## The pip interface
+## pip インターフェース
 
-Manually managing environments and packages — intended to be used in legacy workflows or cases where
-the high-level commands do not provide enough control.
+環境とパッケージを手動で管理します。従来のワークフローや、高レベルのコマンドでは十分な制御が行えないケースで使用することを目的としています。
 
-Creating virtual environments (replacing `venv` and `virtualenv`):
+仮想環境の作成 (`venv` と `virtualenv` の置き換え):
 
-- `uv venv`: Create a new virtual environment.
+- `uv venv`: 新しい仮想環境を作成します。
 
-See the documentation on [using environments](../pip/environments.md) for details.
+詳細については、[環境の使用](../pip/environments.md)に関するドキュメントを参照してください。
 
-Managing packages in an environment (replacing [`pip`](https://github.com/pypa/pip) and
-[`pipdeptree`](https://github.com/tox-dev/pipdeptree)):
+環境内のパッケージの管理 ([`pip`](https://github.com/pypa/pip) と [`pipdeptree`](https://github.com/tox-dev/pipdeptree) の置き換え):
 
-- `uv pip install`: Install packages into the current environment.
-- `uv pip show`: Show details about an installed package.
-- `uv pip freeze`: List installed packages and their versions.
-- `uv pip check`: Check that the current environment has compatible packages.
-- `uv pip list`: List installed packages.
-- `uv pip uninstall`: Uninstall packages.
-- `uv pip tree`: View the dependency tree for the environment.
+- `uv pip install`: 現在の環境にパッケージをインストールします。
+- `uv pip show`: インストールされたパッケージの詳細を表示します。
+- `uv pip freeze`: インストールされているパッケージとそのバージョンを一覧表示します。
+- `uv pip check`: 現在の環境に互換性のあるパッケージがあることを確認します。
+- `uv pip list`: インストールされているパッケージを一覧表示します。
+- `uv pip uninstall`: パッケージをアンインストールします。
+- `uv pip tree`: 環境の依存関係ツリーを表示します。
 
-See the documentation on [managing packages](../pip/packages.md) for details.
+詳細については、[パッケージの管理](../pip/packages.md)に関するドキュメントを参照してください。
 
-Locking packages in an environment (replacing [`pip-tools`](https://github.com/jazzband/pip-tools)):
+環境内のパッケージをロックする（[`pip-tools`](https://github.com/jazzband/pip-tools) の置き換え）:
 
-- `uv pip compile`: Compile requirements into a lockfile.
-- `uv pip sync`: Sync an environment with a lockfile.
+- `uv pip compile`: 要件をロックファイルにコンパイルします。
+- `uv pip sync`: 環境をロックファイルと同期します。
 
-See the documentation on [locking environments](../pip/compile.md) for details.
+詳細については、[環境のロック](../pip/compile.md)のドキュメントを参照してください。
 
 !!! important
 
-    These commands do not exactly implement the interfaces and behavior of the tools they are based on. The further you stray from common workflows, the more likely you are to encounter differences. Consult the [pip-compatibility guide](../pip/compatibility.md) for details.
+    これらのコマンドは、ベースとなるツールのインターフェースや動作を正確に実装しているわけではありません。一般的なワークフローから外れれば外れれば外れるほど、違いに遭遇する可能性が高くなります。詳細については、[pip 互換性ガイド](../pip/compatibility.md) を参照してください。
 
-## Utility
+## ユーティリティ
 
-Managing and inspecting uv's state, such as the cache, storage directories, or performing a
-self-update:
+キャッシュ、ストレージディレクトリ、自己更新の実行など、uv の状態の管理と検査:
 
-- `uv cache clean`: Remove cache entries.
-- `uv cache prune`: Remove outdated cache entries.
-- `uv cache dir`: Show the uv cache directory path.
-- `uv tool dir`: Show the uv tool directory path.
-- `uv python dir`: Show the uv installed Python versions path.
-- `uv self update`: Update uv to the latest version.
+- `uv cache clean`: キャッシュエントリを削除します。
+- `uv cache prune`: 古くなったキャッシュエントリを削除します。
+- `uv cache dir`: uv キャッシュ ディレクトリ パスを表示します。
+- `uv tool dir`: uv ツールのディレクトリ パスを表示します。
+- `uv python dir`: uv がインストールされている Python バージョンのパスを表示します。
+- `uv self update`: uv を最新バージョンに更新します。
 
-## Next steps
+## 次のステップ
 
-Read the [guides](../guides/index.md) for an introduction to each feature, check out
-[concept](../concepts/index.md) pages for in-depth details about uv's features, or learn how to
-[get help](./help.md) if you run into any problems.
+各機能の概要については [ガイド](../guides/index.md) をお読みください。uv の機能の詳細については [コンセプト](../concepts/index.md) ページをご覧ください。また、問題が発生した場合は [ヘルプの取得](./help.md) 方法を学んでください。

@@ -1,11 +1,11 @@
-# Concepts overview
+# コンセプトの概要
 
-Read the concept documents to learn more about uv's features:
+uvの機能について詳しく知るにはコンセプトドキュメントを読んでください:
 
-- [Projects](./projects/index.md)
-- [Tools](./tools.md)
-- [Python versions](./python-versions.md)
-- [Resolution](./resolution.md)
-- [Caching](./cache.md)
+- [プロジェクト](./projects/index.md)
+- [ツール](./tools.md)
+- [Python の各バージョン](./python-versions.md)
+- [依存関係の解決](./resolution.md)
+- [キャッシュ](./cache.md)
 
-Looking for a quick introduction to features? See the [guides](../guides/index.md) instead.
+機能の簡単な紹介をお探しですか? 代わりに [ガイド](../guides/index.md)をご覧ください。

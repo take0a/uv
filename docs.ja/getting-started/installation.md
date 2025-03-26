@@ -1,28 +1,28 @@
-# Installing uv
+# uv のインストール
 
-## Installation methods
+## インストール方法
 
-Install uv with our standalone installers or your package manager of choice.
+スタンドアロン・インストーラーまたは選択したパッケージ・マネージャーを使用して uv をインストールします。
 
-### Standalone installer
+### スタンドアロン・インストーラー
 
-uv provides a standalone installer to download and install uv:
+uv は uv をダウンロードしてインストールするためのスタンドアロン・インストーラーを提供します:
 
 === "macOS and Linux"
 
-    Use `curl` to download the script and execute it with `sh`:
+    `curl` を使用してスクリプトをダウンロードし、`sh` で実行します:
 
     ```console
     $ curl -LsSf https://astral.sh/uv/install.sh | sh
     ```
 
-    If your system doesn't have `curl`, you can use `wget`:
+    システムに `curl` がない場合は `wget` を使うことができます:
 
     ```console
     $ wget -qO- https://astral.sh/uv/install.sh | sh
     ```
 
-    Request a specific version by including it in the URL:
+    URL に特定のバージョンを含めることで、そのバージョンをリクエストします:
 
     ```console
     $ curl -LsSf https://astral.sh/uv/0.6.10/install.sh | sh
@@ -30,15 +30,15 @@ uv provides a standalone installer to download and install uv:
 
 === "Windows"
 
-    Use `irm` to download the script and execute it with `iex`:
+    `irm` を使用してスクリプトをダウンロードし、`iex` で実行します:
 
     ```console
     $ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
     ```
 
-    Changing the [execution policy](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.4#powershell-execution-policies) allows running a script from the internet.
+    [実行ポリシー](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.4#powershell-execution-policies)を変更すると、インターネットからのスクリプトを実行できるようになります。
 
-    Request a specific version by including it in the URL:
+    URL に特定のバージョンを含めることで、そのバージョンをリクエストします:
 
     ```console
     $ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/0.6.10/install.ps1 | iex"
@@ -46,7 +46,7 @@ uv provides a standalone installer to download and install uv:
 
 !!! tip
 
-    The installation script may be inspected before use:
+    インストールスクリプトは使用前に検査できます:
 
     === "macOS and Linux"
 
@@ -60,22 +60,21 @@ uv provides a standalone installer to download and install uv:
         $ powershell -c "irm https://astral.sh/uv/install.ps1 | more"
         ```
 
-    Alternatively, the installer or binaries can be downloaded directly from [GitHub](#github-releases).
+    あるいは、インストーラーまたはバイナリを [GitHub](#github-releases) から直接ダウンロードすることもできます。
 
-See the documentation on [installer configuration](../configuration/installer.md) for details on
-customizing your uv installation.
+uv のインストールのカスタマイズの詳細については、[インストーラーの構成](../configuration/installer.md) のドキュメントを参照してください。
 
 ### PyPI
 
-For convenience, uv is published to [PyPI](https://pypi.org/project/uv/).
+便宜上、uv は [PyPI](https://pypi.org/project/uv/) に公開されています。
 
-If installing from PyPI, we recommend installing uv into an isolated environment, e.g., with `pipx`:
+PyPI からインストールする場合は、`pipx` などを使用して、隔離された環境に uv をインストールすることをお勧めします:
 
 ```console
 $ pipx install uv
 ```
 
-However, `pip` can also be used:
+ただし、`pip` も使用できます:
 
 ```console
 $ pip install uv
@@ -83,15 +82,11 @@ $ pip install uv
 
 !!! note
 
-    uv ships with prebuilt distributions (wheels) for many platforms; if a wheel is not available for a given
-    platform, uv will be built from source, which requires a Rust toolchain. See the
-    [contributing setup guide](https://github.com/astral-sh/uv/blob/main/CONTRIBUTING.md#setup)
-    for details on building uv from source.
+    uv には、多くのプラットフォーム向けのビルド済みディストリビューション (wheels) が付属しています。特定のプラットフォームで wheel が利用できない場合は、uv はソースからビルドされます。これには Rust ツールチェーンが必要です。ソースから uv をビルドする方法の詳細については、[コントリビューティング・セットアップガイド](https://github.com/astral-sh/uv/blob/main/CONTRIBUTING.md#setup) を参照してください。
 
 ### Cargo
 
-uv is available via Cargo, but must be built from Git rather than [crates.io](https://crates.io) due
-to its dependency on unpublished crates.
+uv は Cargo 経由で利用可能ですが、未公開の crates に依存しているため、[crates.io](https://crates.io) ではなく Git からビルドする必要があります。
 
 ```console
 $ cargo install --git https://github.com/astral-sh/uv uv
@@ -99,7 +94,7 @@ $ cargo install --git https://github.com/astral-sh/uv uv
 
 ### Homebrew
 
-uv is available in the core Homebrew packages.
+uv はコア Homebrew パッケージで利用できます。
 
 ```console
 $ brew install uv
@@ -107,7 +102,7 @@ $ brew install uv
 
 ### WinGet
 
-uv is available via [WinGet](https://winstall.app/apps/astral-sh.uv).
+uv は [WinGet](https://winstall.app/apps/astral-sh.uv) から入手できます。
 
 ```console
 $ winget install --id=astral-sh.uv  -e
@@ -115,7 +110,7 @@ $ winget install --id=astral-sh.uv  -e
 
 ### Scoop
 
-uv is available via [Scoop](https://scoop.sh/#/apps?q=uv).
+uv は [Scoop](https://scoop.sh/#/apps?q=uv) から入手できます。
 
 ```console
 $ scoop install main/uv
@@ -123,22 +118,19 @@ $ scoop install main/uv
 
 ### Docker
 
-uv provides a Docker image at
-[`ghcr.io/astral-sh/uv`](https://github.com/astral-sh/uv/pkgs/container/uv).
+uv は [`ghcr.io/astral-sh/uv`](https://github.com/astral-sh/uv/pkgs/container/uv) で Docker イメージを提供します。
 
-See our guide on [using uv in Docker](../guides/integration/docker.md) for more details.
+詳細については、[Docker での uv の使用](../guides/integration/docker.md) に関するガイドを参照してください。
 
-### GitHub Releases
+### GitHub リリース
 
-uv release artifacts can be downloaded directly from
-[GitHub Releases](https://github.com/astral-sh/uv/releases).
+uv のリリース成果物は、[GitHub リリース](https://github.com/astral-sh/uv/releases)から直接ダウンロードできます。
 
-Each release page includes binaries for all supported platforms as well as instructions for using
-the standalone installer via `github.com` instead of `astral.sh`.
+各リリースページには、サポートされているすべてのプラットフォームのバイナリと、`astral.sh` の代わりに `github.com` 経由でスタンドアロン・インストーラーを使用する手順が含まれています。
 
-## Upgrading uv
+## uv のアップグレード
 
-When uv is installed via the standalone installer, it can update itself on-demand:
+uv をスタンドアロン・インストーラーでインストールすると、オンデマンドで更新できます:
 
 ```console
 $ uv self update
@@ -146,23 +138,21 @@ $ uv self update
 
 !!! tip
 
-    Updating uv will re-run the installer and can modify your shell profiles. To disable this
-    behavior, set `INSTALLER_NO_MODIFY_PATH=1`.
+    uv を更新するとインストーラーが再実行され、シェルのプロファイルが変更される可能性があります。この動作を無効にするには、`INSTALLER_NO_MODIFY_PATH=1` を設定します。
 
-When another installation method is used, self-updates are disabled. Use the package manager's
-upgrade method instead. For example, with `pip`:
+別のインストール方法を使用すると、自己更新は無効になります。代わりにパッケージ・マネージャーのアップグレード方法を使用してください。たとえば、`pip` の場合:
 
 ```console
 $ pip install --upgrade uv
 ```
 
-## Shell autocompletion
+## シェルの自動補完
 
 !!! tip
 
-    You can run `echo $SHELL` to help you determine your shell.
+    シェルを確認するには、`echo $SHELL` を実行します。
 
-To enable shell autocompletion for uv commands, run one of the following:
+uv コマンドのシェル自動補完を有効にするには、次のいずれかを実行します:
 
 === "Bash"
 
@@ -197,7 +187,7 @@ To enable shell autocompletion for uv commands, run one of the following:
     Add-Content -Path $PROFILE -Value '(& uv generate-shell-completion powershell) | Out-String | Invoke-Expression'
     ```
 
-To enable shell autocompletion for uvx, run one of the following:
+uvx のシェルの自動補完を有効にするには、次のいずれかを実行します:
 
 === "Bash"
 
@@ -232,13 +222,13 @@ To enable shell autocompletion for uvx, run one of the following:
     Add-Content -Path $PROFILE -Value '(& uvx --generate-shell-completion powershell) | Out-String | Invoke-Expression'
     ```
 
-Then restart the shell or source the shell config file.
+次に、シェルを再起動するか、シェル構成ファイルを読み込みます。
 
-## Uninstallation
+## アンインストール
 
-If you need to remove uv from your system, follow these steps:
+システムから uv を削除する必要がある場合は、次の手順に従ってください:
 
-1.  Clean up stored data (optional):
+1.  保存されたデータをクリーンアップする（オプション）:
 
     ```console
     $ uv cache clean
@@ -248,9 +238,9 @@ If you need to remove uv from your system, follow these steps:
 
     !!! tip
 
-        Before removing the binaries, you may want to remove any data that uv has stored.
+        バイナリを削除する前に、uv が保存したデータをすべて削除することをお勧めします。
 
-2.  Remove the uv and uvx binaries:
+2.  uv と uvx バイナリを削除します:
 
     === "macOS and Linux"
 
@@ -267,11 +257,8 @@ If you need to remove uv from your system, follow these steps:
 
     !!! note
 
-        Prior to 0.5.0, uv was installed into `~/.cargo/bin`. The binaries can be removed from there to
-        uninstall. Upgrading from an older version will not automatically remove the binaries from
-        `~/.cargo/bin`.
+        0.5.0 より前では、uv は `~/.cargo/bin` にインストールされていました。アンインストールするには、そこからバイナリを削除できます。古いバージョンからアップグレードしても、`~/.cargo/bin` からバイナリは自動的に削除されません。
 
-## Next steps
+## 次のステップ
 
-See the [first steps](./first-steps.md) or jump straight to the [guides](../guides/index.md) to
-start using uv.
+[最初のステップ](./first-steps.md)を参照するか、[ガイド](../guides/index.md)に直接移動して uv の使用を開始してください。

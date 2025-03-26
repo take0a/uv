@@ -1,7 +1,6 @@
-# First steps with uv
+# uv の最初のステップ
 
-After [installing uv](./installation.md), you can check that uv is available by running the `uv`
-command:
+[uvをインストール](./installation.md)した後、`uv` コマンドを実行すると、uv が利用可能か確認できます:
 
 ```console
 $ uv
@@ -12,10 +11,8 @@ Usage: uv [OPTIONS] <COMMAND>
 ...
 ```
 
-You should see a help menu listing the available commands.
+利用可能なコマンドをリストしたヘルプメニューが表示されます。
 
-## Next steps
+## 次のステップ
 
-Now that you've confirmed uv is installed, check out an [overview of features](./features.md), learn
-how to [get help](./help.md) if you run into any problems, or jump to the
-[guides](../guides/index.md) to start using uv.
+uv がインストールされていることを確認したら、[機能の概要](./features.md)を確認し、問題が発生した場合に[ヘルプを受ける](./help.md)方法を学習するか、[ガイド](../guides/index.md)に移動して uv の使用を開始してください。

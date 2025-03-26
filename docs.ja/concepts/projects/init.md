@@ -1,29 +1,24 @@
-# Creating projects
+# プロジェクトの作成
 
-uv supports creating a project with `uv init`.
+uv は `uv init` を使用したプロジェクトの作成をサポートしています。
 
-When creating projects, uv supports two basic templates: [**applications**](#applications) and
-[**libraries**](#libraries). By default, uv will create a project for an application. The `--lib`
-flag can be used to create a project for a library instead.
+プロジェクトを作成するとき、uv は 2 つの基本テンプレート [**アプリケーション**](#アプリケーション) と [**ライブラリ**](#ライブラリ) をサポートします。デフォルトでは、uv はアプリケーションのプロジェクトを作成します。代わりに `--lib` フラグを使用してライブラリのプロジェクトを作成することもできます。
 
-## Target directory
+## 対象ディレクトリ
 
-uv will create a project in the working directory, or, in a target directory by providing a name,
-e.g., `uv init foo`. If there's already a project in the target directory, i.e., if there's a
-`pyproject.toml`, uv will exit with an error.
+uv は作業ディレクトリにプロジェクトを作成するか、または名前を指定してターゲット ディレクトリにプロジェクトを作成します (例: `uv init foo`)。ターゲット ディレクトリにすでにプロジェクトがある場合 (つまり、`pyproject.toml` がある場合)、uv はエラーで終了します。
 
-## Applications
+## アプリケーション
 
-Application projects are suitable for web servers, scripts, and command-line interfaces.
+アプリケーションのプロジェクトは、Web サーバー、スクリプト、コマンド ライン インターフェイスに適しています。
 
-Applications are the default target for `uv init`, but can also be specified with the `--app` flag.
+アプリケーションは `uv init` のデフォルトのターゲットですが、 `--app` フラグで指定することもできます。
 
 ```console
 $ uv init example-app
 ```
 
-The project includes a `pyproject.toml`, a sample file (`main.py`), a readme, and a Python version
-pin file (`.python-version`).
+プロジェクトには、`pyproject.toml`、サンプル ファイル (`main.py`)、readme、Python バージョン ピン ファイル (`.python-version`) が含まれています。
 
 ```console
 $ tree example-app
@@ -36,10 +31,9 @@ example-app
 
 !!! note
 
-    Prior to v0.6.0, uv created a file named `hello.py` instead of `main.py`.
+    v0.6.0 より前では、uv は `main.py` ではなく `hello.py` という名前のファイルを作成しました。
 
-The `pyproject.toml` includes basic metadata. It does not include a build system, it is not a
-[package](./config.md#project-packaging) and will not be installed into the environment:
+`pyproject.toml` には基本的なメタデータが含まれています。ビルドシステムは含まれておらず、[パッケージ](./config.md#project-packaging) ではないため、環境にインストールされません。
 
 ```toml title="pyproject.toml"
 [project]
@@ -51,7 +45,7 @@ requires-python = ">=3.11"
 dependencies = []
 ```
 
-The sample file defines a `main` function with some standard boilerplate:
+サンプルファイルでは、標準的な定型句を使用して `main` 関数を定義しています:
 
 ```python title="main.py"
 def main():
@@ -62,7 +56,7 @@ if __name__ == "__main__":
     main()
 ```
 
-Python files can be executed with `uv run`:
+Python ファイルは `uv run` で実行できます:
 
 ```console
 $ cd example-app
@@ -70,19 +64,17 @@ $ uv run main.py
 Hello from example-project!
 ```
 
-## Packaged applications
+## パッケージ・アプリケーション
 
-Many use-cases require a [package](./config.md#project-packaging). For example, if you are creating
-a command-line interface that will be published to PyPI or if you want to define tests in a
-dedicated directory.
+多くのユースケースでは [パッケージ](./config.md#project-packaging) が必要です。たとえば、PyPI に公開されるコマンドライン インターフェイスを作成する場合や、専用のディレクトリでテストを定義する場合などです。
 
-The `--package` flag can be used to create a packaged application:
+`--package` フラグを使用して、パッケージ化されたアプリケーションを作成できます:
 
 ```console
 $ uv init --package example-pkg
 ```
 
-The source code is moved into a `src` directory with a module directory and an `__init__.py` file:
+ソースコードは、モジュールディレクトリと `__init__.py` ファイルとともに `src` ディレクトリに移動されます。
 
 ```console
 $ tree example-pkg
@@ -95,8 +87,7 @@ example-pkg
         └── __init__.py
 ```
 
-A [build system](./config.md#build-systems) is defined, so the project will be installed into the
-environment:
+[ビルドシステム](./config.md#build-systems) が定義されているため、プロジェクトは環境にインストールされます:
 
 ```toml title="pyproject.toml" hl_lines="12-14"
 [project]
@@ -117,9 +108,9 @@ build-backend = "hatchling.build"
 
 !!! tip
 
-    The `--build-backend` option can be used to request an alternative build system.
+    `--build-backend` オプションを使用すると、代替ビルド システムを要求できます。
 
-A [command](./config.md#entry-points) definition is included:
+[コマンド](./config.md#entry-points)の定義が含まれています:
 
 ```toml title="pyproject.toml" hl_lines="9 10"
 [project]
@@ -138,7 +129,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 ```
 
-The command can be executed with `uv run`:
+このコマンドは `uv run` で実行できます:
 
 ```console
 $ cd example-pkg
@@ -146,12 +137,11 @@ $ uv run example-pkg
 Hello from example-pkg!
 ```
 
-## Libraries
+## ライブラリ
 
-A library provides functions and objects for other projects to consume. Libraries are intended to be
-built and distributed, e.g., by uploading them to PyPI.
+ライブラリは、他のプロジェクトが使用できる関数とオブジェクトを提供します。ライブラリは、PyPI にアップロードするなどして構築および配布することを目的としています。
 
-Libraries can be created by using the `--lib` flag:
+ライブラリは `--lib` フラグを使用して作成できます:
 
 ```console
 $ uv init --lib example-lib
@@ -159,10 +149,9 @@ $ uv init --lib example-lib
 
 !!! note
 
-    Using `--lib` implies `--package`. Libraries always require a packaged project.
+    `--lib` を使用すると `--package` も暗黙的に使用されます。ライブラリには常にパッケージ化されたプロジェクトが必要です。
 
-As with a [packaged application](#packaged-applications), a `src` layout is used. A `py.typed`
-marker is included to indicate to consumers that types can be read from the library:
+[パッケージ化されたアプリケーション](#packaged-applications)と同様に、`src`レイアウトが使用されます。`py.typed`マーカーは、ライブラリから型を読み取ることができることを消費者に示すために含まれています:
 
 ```console
 $ tree example-lib
@@ -178,12 +167,9 @@ example-lib
 
 !!! note
 
-    A `src` layout is particularly valuable when developing libraries. It ensures that the library is
-    isolated from any `python` invocations in the project root and that distributed library code is
-    well separated from the rest of the project source.
+    `src` レイアウトは、ライブラリを開発するときに特に役立ちます。これにより、ライブラリがプロジェクト ルート内の `python` 呼び出しから分離され、分散ライブラリ コードがプロジェクト ソースの残りの部分から適切に分離されます。
 
-A [build system](./config.md#build-systems) is defined, so the project will be installed into the
-environment:
+[ビルド システム](./config.md#build-systems) が定義されているため、プロジェクトは環境にインストールされます。
 
 ```toml title="pyproject.toml" hl_lines="12-14"
 [project]
@@ -201,18 +187,16 @@ build-backend = "hatchling.build"
 
 !!! tip
 
-    You can select a different build backend template by using `--build-backend` with `hatchling`,
-    `flit-core`, `pdm-backend`, `setuptools`, `maturin`, or `scikit-build-core`. An alternative
-    backend is required if you want to create a [library with extension modules](#projects-with-extension-modules).
+    `--build-backend` を `hatchling`、`flit-core`、`pdm-backend`、`setuptools`、`maturin`、または `scikit-build-core` とともに使用することで、別のビルドバックエンドテンプレートを選択できます。[拡張モジュールを含むライブラリ](#projects-with-extension-modules) を作成する場合は、代替のバックエンドが必要です。
 
-The created module defines a simple API function:
+作成されたモジュールは単純な API 関数を定義します:
 
 ```python title="__init__.py"
 def hello() -> str:
     return "Hello from example-lib!"
 ```
 
-And you can import and execute it using `uv run`:
+そして、`uv run` を使用してインポートして実行できます:
 
 ```console
 $ cd example-lib
@@ -220,20 +204,16 @@ $ uv run python -c "import example_lib; print(example_lib.hello())"
 Hello from example-lib!
 ```
 
-## Projects with extension modules
+## 拡張モジュールを使用したプロジェクト
 
-Most Python projects are "pure Python", meaning they do not define modules in other languages like
-C, C++, FORTRAN, or Rust. However, projects with extension modules are often used for performance
-sensitive code.
+ほとんどの Python プロジェクトは「純粋な Python」です。つまり、C、C++、FORTRAN、Rust などの他の言語でモジュールを定義しません。ただし、拡張モジュールを含むプロジェクトは、パフォーマンスが重要となるコードによく使用されます。
 
-Creating a project with an extension module requires choosing an alternative build system. uv
-supports creating projects with the following build systems that support building extension modules:
+拡張モジュールを使用してプロジェクトを作成するには、別のビルド システムを選択する必要があります。uv は、拡張モジュールのビルドをサポートする次のビルド システムを使用したプロジェクトの作成をサポートしています。
 
-- [`maturin`](https://www.maturin.rs) for projects with Rust
-- [`scikit-build-core`](https://github.com/scikit-build/scikit-build-core) for projects with C, C++,
-  FORTRAN, Cython
+- [`maturin`](https://www.maturin.rs) Rust のプロジェクト用
+- [`scikit-build-core`](https://github.com/scikit-build/scikit-build-core) C, C++, FORTRAN, Cython のプロジェクト用
 
-Specify the build system with the `--build-backend` flag:
+`--build-backend` フラグを使用してビルドシステムを指定します:
 
 ```console
 $ uv init --build-backend maturin example-ext
@@ -241,10 +221,9 @@ $ uv init --build-backend maturin example-ext
 
 !!! note
 
-    Using `--build-backend` implies `--package`.
+    `--build-backend` を使用すると `--package` も暗黙的に使用されます。
 
-The project contains a `Cargo.toml` and a `lib.rs` file in addition to the typical Python project
-files:
+プロジェクトには、一般的な Python プロジェクトファイルに加えて、`Cargo.toml` ファイルと `lib.rs` ファイルが含まれています。
 
 ```console
 $ tree example-ext
@@ -262,9 +241,9 @@ example-ext
 
 !!! note
 
-    If using `scikit-build-core`, you'll see CMake configuration and a `main.cpp` file instead.
+    `scikit-build-core` を使用する場合は、代わりに CMake 構成と `main.cpp` ファイルが表示されます。
 
-The Rust library defines a simple function:
+Rust ライブラリは単純な関数を定義します:
 
 ```rust title="src/lib.rs"
 use pyo3::prelude::*;
@@ -281,7 +260,7 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
 }
 ```
 
-And the Python module imports it:
+そして、Python モジュールはそれをインポートします:
 
 ```python title="src/example_ext/__init__.py"
 from example_ext._core import hello_from_bin
@@ -291,7 +270,7 @@ def main() -> None:
     print(hello_from_bin())
 ```
 
-The command can be executed with `uv run`:
+このコマンドは `uv run` で実行できます:
 
 ```console
 $ cd example-ext
@@ -301,19 +280,17 @@ Hello from example-ext!
 
 !!! important
 
-    Changes to the extension code in `lib.rs` or `main.cpp` will require running `--reinstall` to
-    rebuild them.
+    `lib.rs` または `main.cpp` の拡張コードを変更するには、`--reinstall` を実行して再構築する必要があります。
 
-## Creating a minimal project
+## 最小限のプロジェクトを作成する
 
-If you only want to create a `pyproject.toml`, use the `--bare` option:
+`pyproject.toml` のみを作成する場合は、`--bare` オプションを使用します:
 
 ```console
 $ uv init example --bare
 ```
 
-uv will skip creating a Python version pin file, a README, and any source directories or files.
-Additionally, uv will not initialize a version control system (i.e., `git`).
+uv は、Python バージョンのピンファイル、README、およびソースディレクトリまたはファイルの作成をスキップします。さらに、uv はバージョンコントロールシステム (つまり、`git`) を初期化しません。
 
 ```console
 $ tree example-bare
@@ -321,7 +298,7 @@ example-bare
 └── pyproject.toml
 ```
 
-uv will also not add extra metadata to the `pyproject.toml`, such as the `description` or `authors`.
+uv は、`description` や `authors` などの追加のメタデータを `pyproject.toml` に追加しません。
 
 ```toml
 [project]
@@ -331,10 +308,9 @@ requires-python = ">=3.12"
 dependencies = []
 ```
 
-The `--bare` option can be used with other options like `--lib` or `--build-backend` — in these
-cases uv will still configure a build system but will not create the expected file structure.
+`--bare` オプションは、`--lib` や `--build-backend` などの他のオプションと一緒に使用できます。これらの場合、uv はビルドシステムを構成しますが、期待されるファイル構造は作成されません。
 
-When `--bare` is used, additional features can still be used opt-in:
+`--bare` を使用する場合でも、追加機能はオプトインで使用できます:
 
 ```console
 $ uv init example --bare --description "Hello world" --author-from git --vcs git --python-pin

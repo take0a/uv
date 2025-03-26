@@ -5,16 +5,13 @@ description:
   installation, viewing installed versions, and more.
 ---
 
-# Installing Python
+# Python のインストール
 
-If Python is already installed on your system, uv will
-[detect and use](#using-existing-python-versions) it without configuration. However, uv can also
-install and manage Python versions. uv [automatically installs](#automatic-python-downloads) missing
-Python versions as needed — you don't need to install Python to get started.
+システムに Python がすでにインストールされている場合、 uv は設定なしでそれを [検出して使用](#using-existing-python-versions) します。ただし、 uv は Python のバージョンをインストールして管理することもできます。 uv は必要に応じて不足している Python のバージョンを [自動的にインストール](#automatic-python-downloads) します。開始するために Python をインストールする必要はありません。
 
-## Getting started
+## はじめる
 
-To install the latest Python version:
+最新の Python のバージョンをインストールするには:
 
 ```console
 $ uv python install
@@ -22,79 +19,67 @@ $ uv python install
 
 !!! note
 
-    Python does not publish official distributable binaries. As such, uv uses distributions from the Astral [`python-build-standalone`](https://github.com/astral-sh/python-build-standalone) project. See the [Python distributions](../concepts/python-versions.md#managed-python-distributions) documentation for more details.
+    Python は公式の配布可能なバイナリを公開していません。そのため、uv は Astral [`python-build-standalone`](https://github.com/astral-sh/python-build-standalone) プロジェクトの配布を使用します。詳細については、[Python 配布](../concepts/python-versions.md#managed-python-distributions) のドキュメントを参照してください。
 
-Once Python is installed, it will be used by `uv` commands automatically.
+Python がインストールされると、`uv` コマンドによって自動的に使用されるようになります。
 
 !!! important
 
-    When Python is installed by uv, it will not be available globally (i.e. via the `python` command).
-    Support for this feature is in _preview_. See [Installing Python executables](../concepts/python-versions.md#installing-python-executables)
-    for details.
+    Python が uv によってインストールされると、グローバルには利用できなくなります (つまり、`python` コマンド経由では利用できなくなります)。この機能のサポートは _preview_ 段階です。詳細については、[Python 実行ファイルのインストール](../concepts/python-versions.md#installing-python-executables) を参照してください。
 
-    You can still use
-    [`uv run`](../guides/scripts.md#using-different-python-versions) or
-    [create and activate a virtual environment](../pip/environments.md) to use `python` directly.
+    [`uv run`](../guides/scripts.md#using-different-python-versions) または [仮想環境を作成してアクティブ化](../pip/environments.md) を使用して、`python` を直接使用することもできます。
 
-## Installing a specific version
+## 特定のバージョンのインストール
 
-To install a specific Python version:
+特定の Python バージョンをインストールするには:
 
 ```console
 $ uv python install 3.12
 ```
 
-To install multiple Python versions:
+複数の Python バージョンをインストールするには:
 
 ```console
 $ uv python install 3.11 3.12
 ```
 
-To install an alternative Python implementation, e.g., PyPy:
+代替の Python 実装をインストールするには、例えば PyPy:
 
 ```console
 $ uv python install pypy@3.10
 ```
 
-See the [`python install`](../concepts/python-versions.md#installing-a-python-version) documentation
-for more details.
+詳細については、[`python install`](../concepts/python-versions.md#installing-a-python-version) のドキュメントを参照してください。
 
-## Reinstalling Python
+## Python の再インストール
 
-To reinstall uv-managed Python versions, use `--reinstall`, e.g.:
+UV 管理の Python バージョンを再インストールするには、`--reinstall` を使用します。例:
 
 ```console
 $ uv python install --reinstall
 ```
 
-This will reinstall all previously installed Python versions. Improvements are constantly being
-added to the Python distributions, so reinstalling may resolve bugs even if the Python version does
-not change.
+これにより、以前にインストールされたすべての Python バージョンが再インストールされます。Python ディストリビューションには常に改良が加えられているため、再インストールすると、Python バージョンが変更されていなくてもバグが解決される可能性があります。
 
-## Viewing Python installations
+## Python インストールの表示
 
-To view available and installed Python versions:
+利用可能なインストール済みの Python のバージョンを表示するには:
 
 ```console
 $ uv python list
 ```
 
-See the [`python list`](../concepts/python-versions.md#viewing-available-python-versions)
-documentation for more details.
+詳細については、[`python list`](../concepts/python-versions.md#viewing-available-python-versions) のドキュメントを参照してください。
 
-## Automatic Python downloads
+## Python の自動ダウンロード
 
-Python does not need to be explicitly installed to use uv. By default, uv will automatically
-download Python versions when they are required. For example, the following would download Python
-3.12 if it was not installed:
+uv を使用するために Python を明示的にインストールする必要はありません。デフォルトでは、uv は必要なときに Python バージョンを自動的にダウンロードします。たとえば、次の例では、Python 3.12 がインストールされていない場合はダウンロードされます:
 
 ```console
 $ uvx python@3.12 -c "print('hello world')"
 ```
 
-Even if a specific Python version is not requested, uv will download the latest version on demand.
-For example, if there are no Python versions on your system, the following will install Python
-before creating a new virtual environment:
+特定の Python バージョンが要求されていない場合でも、uv は要求に応じて最新バージョンをダウンロードします。たとえば、システムに Python バージョンがない場合、次のコマンドは新しい仮想環境を作成する前に Python をインストールします:
 
 ```console
 $ uv venv
@@ -102,27 +87,20 @@ $ uv venv
 
 !!! tip
 
-    Automatic Python downloads can be [easily disabled](../concepts/python-versions.md#disabling-automatic-python-downloads) if you want more control over when Python is downloaded.
+    Python のダウンロードのタイミングをより細かく制御したい場合は、Python の自動ダウンロードを [簡単に無効にする](../concepts/python-versions.md#disabling-automatic-python-downloads) ことができます。
 
 <!-- TODO(zanieb): Restore when Python shim management is added
 Note that when an automatic Python installation occurs, the `python` command will not be added to the shell. Use `uv python install-shim` to ensure the `python` shim is installed.
 -->
 
-## Using existing Python versions
+## 既存の Python バージョンの使用
 
-uv will use existing Python installations if present on your system. There is no configuration
-necessary for this behavior: uv will use the system Python if it satisfies the requirements of the
-command invocation. See the
-[Python discovery](../concepts/python-versions.md#discovery-of-python-versions) documentation for
-details.
+uv は、システムに既存の Python インストールが存在する場合はそれを使用します。この動作に必要な設定はありません。uv は、コマンド呼び出しの要件を満たす場合、システムの Python を使用します。詳細については、[Python の検出](../concepts/python-versions.md#discovery-of-python-versions) ドキュメントを参照してください。
 
-To force uv to use the system Python, provide the `--no-managed-python` flag. See the
-[Python version preference](../concepts/python-versions.md#requiring-or-disabling-managed-python-versions)
-documentation for more details.
+uv にシステム Python の使用を強制するには、`--no-managed-python` フラグを指定します。詳細については、[Python バージョンの設定](../concepts/python-versions.md#requiring-or-disabling-managed-python-versions) ドキュメントを参照してください。
 
-## Next steps
+## 次のステップ
 
-To learn more about `uv python`, see the [Python version concept](../concepts/python-versions.md)
-page and the [command reference](../reference/cli.md#uv-python).
+`uv python` の詳細については、[Python バージョンのコンセプト](../concepts/python-versions.md) ページと [コマンドリファレンス](../reference/cli.md#uv-python) を参照してください。
 
-Or, read on to learn how to [run scripts](./scripts.md) and invoke Python with uv.
+または、[スクリプトを実行](./scripts.md)して uv で Python を呼び出す方法については、以下をお読みください。
