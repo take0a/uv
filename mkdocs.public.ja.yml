@@ -1,0 +1,10 @@
+# NOTE: Usually, you should edit the template instead.
+# This file is used for forks and contributors, production uses `mkdocs.insiders.yml`.
+
+# uvx --with-requirements docs.ja/requirements.txt -- mkdocs serve -f mkdocs.public.ja.yml
+
+INHERIT: mkdocs.template.yml
+
+docs_dir: docs.ja
+watch:
+  - mkdocs.template.yml
