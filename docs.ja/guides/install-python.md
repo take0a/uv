@@ -71,7 +71,7 @@ $ uv python list
 
 詳細については、[`python list`](../concepts/python-versions.md#viewing-available-python-versions) のドキュメントを参照してください。
 
-## Python の自動ダウンロード
+## Python の自動ダウンロード {#automatic-python-downloads}
 
 uv を使用するために Python を明示的にインストールする必要はありません。デフォルトでは、uv は必要なときに Python バージョンを自動的にダウンロードします。たとえば、次の例では、Python 3.12 がインストールされていない場合はダウンロードされます:
 
@@ -93,7 +93,7 @@ $ uv venv
 Note that when an automatic Python installation occurs, the `python` command will not be added to the shell. Use `uv python install-shim` to ensure the `python` shim is installed.
 -->
 
-## 既存の Python バージョンの使用
+## 既存の Python バージョンの使用 {#using-existing-python-versions}
 
 uv は、システムに既存の Python インストールが存在する場合はそれを使用します。この動作に必要な設定はありません。uv は、コマンド呼び出しの要件を満たす場合、システムの Python を使用します。詳細については、[Python の検出](../concepts/python-versions.md#discovery-of-python-versions) ドキュメントを参照してください。
 

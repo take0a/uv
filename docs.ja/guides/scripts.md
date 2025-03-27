@@ -129,7 +129,7 @@ Python は最近、[インラインスクリプト・メタデータ](https://pa
 $ uv init --script example.py --python 3.12
 ```
 
-## スクリプトの依存関係の宣言
+## スクリプトの依存関係の宣言 {#declaring-script-dependencies}
 
 インライン・メタデータ形式を使用すると、スクリプトの依存関係をスクリプト自体で宣言できます。
 
@@ -249,7 +249,7 @@ import requests
 print(requests.__version__)
 ```
 
-## 異なる Python バージョンの使用
+## 異なる Python バージョンの使用 {#using-different-python-versions}
 
 uv を使用すると、スクリプトの呼び出しごとに任意の Python バージョンを要求できます。次に例を示します。
 

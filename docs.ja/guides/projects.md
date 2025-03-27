@@ -142,7 +142,7 @@ $ uv lock --upgrade-package requests
 
 詳細については、[依存関係の管理](../concepts/projects/dependencies.md)に関するドキュメントを参照してください。
 
-## コマンドの実行
+## コマンドの実行 {#running-commands}
 
 `uv run` を使用すると、プロジェクト環境で任意のスクリプトまたはコマンドを実行できます。
 

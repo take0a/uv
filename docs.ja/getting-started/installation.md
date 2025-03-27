@@ -122,7 +122,7 @@ uv は [`ghcr.io/astral-sh/uv`](https://github.com/astral-sh/uv/pkgs/container/u
 
 詳細については、[Docker での uv の使用](../guides/integration/docker.md) に関するガイドを参照してください。
 
-### GitHub リリース
+### GitHub リリース {#github-releases}
 
 uv のリリース成果物は、[GitHub リリース](https://github.com/astral-sh/uv/releases)から直接ダウンロードできます。
 

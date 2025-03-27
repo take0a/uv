@@ -6,5 +6,7 @@
 INHERIT: mkdocs.template.yml
 
 docs_dir: docs.ja
+theme:
+  lang: ja
 watch:
   - mkdocs.template.yml

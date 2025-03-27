@@ -52,7 +52,7 @@ uv は [Ruff](https://github.com/astral-sh/ruff) の作者である [Astral](htt
 
     uv は pip, Homebrew などを使用してインストールすることもできます。[インストールのページ](./getting-started/installation.md)で全ての方法を確認しくて下さい。
 
-## プロジェクト
+## プロジェクト {#projects}
 
 uv は `rye` や `poetry` と同様、ロックファイルやワークスペースなどをサポートし、プロジェクトの依存関係と環境を管理します:
 
@@ -86,7 +86,7 @@ Audited 1 package in 0.02ms
 
 uv は、uv で管理されていない場合でも、プロジェクトのビルドと公開をサポートします。詳細については、[パッケージングガイド](./guides/package.md)を参照してください。
 
-## スクリプト
+## スクリプト {#scripts}
 
 uv は単一ファイル スクリプトの依存関係と環境を管理します。
 
@@ -110,7 +110,7 @@ Installed 5 packages in 12ms
 
 開始するには、[スクリプトガイド](./guides/scripts.md)を参照してください。
 
-## ツール
+## ツール {#tools}
 
 uv は、`pipx` と同様に、Python パッケージによって提供されるコマンドラインツールの実行とインストールを行います。
 
@@ -148,7 +148,7 @@ ruff 0.5.4
 
 開始するには、[ツールガイド](./guides/tools.md)を参照してください。
 
-## Python の各種バージョン
+## Python の各種バージョン {#python-versions}
 
 uv は Python をインストールし、バージョン間の切り替えを素早く行うことができます。
 
@@ -189,7 +189,7 @@ Pinned `.python-version` to `3.11`
 
 開始するには、[Python のインストールガイド](./guides/install-python.md)を参照してください。
 
-## pip インターフェース
+## pip インターフェース {#the-pip-interface}
 
 uv は、一般的な `pip`、`pip-tools`、および `virtualenv` コマンドを置き換えます。
 
