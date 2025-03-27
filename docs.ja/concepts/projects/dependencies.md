@@ -1,33 +1,29 @@
-# Managing dependencies
+# 依存関係の管理
 
-## Dependency fields
+## 依存関係のフィールド
 
-Dependencies of the project are defined in several fields:
+プロジェクトの依存関係はいくつかのフィールドで定義されます:
 
-- [`project.dependencies`](#project-dependencies): Published dependencies.
-- [`project.optional-dependencies`](#optional-dependencies): Published optional dependencies, or
-  "extras".
-- [`dependency-groups`](#dependency-groups): Local dependencies for development.
-- [`tool.uv.sources`](#dependency-sources): Alternative sources for dependencies during development.
+- [`project.dependencies`](#project-dependencies): 公開された依存関係。
+- [`project.optional-dependencies`](#optional-dependencies): 公開されたオプションの依存関係、つまり「追加機能」。
+- [`dependency-groups`](#dependency-groups): 開発のためのローカル依存関係。
+- [`tool.uv.sources`](#dependency-sources): 開発中の依存関係の代替ソース。
 
 !!! note
 
-    The `project.dependencies` and `project.optional-dependencies` fields can be used even if
-    project isn't going to be published. `dependency-groups` are a recently standardized feature
-    and may not be supported by all tools yet.
+    `project.dependencies` フィールドと `project.optional-dependencies` フィールドは、プロジェクトが公開されない場合でも使用できます。`dependency-groups` は最近標準化された機能であり、まだすべてのツールでサポートされているわけではない可能性があります。
 
-uv supports modifying the project's dependencies with `uv add` and `uv remove`, but dependency
-metadata can also be updated by editing the `pyproject.toml` directly.
+uv は `uv add` と `uv remove` を使用してプロジェクトの依存関係を変更することをサポートしていますが、依存関係のメタデータは `pyproject.toml` を直接編集して更新することもできます。
 
-## Adding dependencies
+## 依存関係の追加
 
-To add a dependency:
+依存関係を追加するには:
 
 ```console
 $ uv add httpx
 ```
 
-An entry will be added in the `project.dependencies` field:
+`project.dependencies` フィールドにエントリが追加されます:
 
 ```toml title="pyproject.toml" hl_lines="4"
 [project]
@@ -36,25 +32,21 @@ version = "0.1.0"
 dependencies = ["httpx>=0.27.2"]
 ```
 
-The [`--dev`](#development-dependencies), [`--group`](#dependency-groups), or
-[`--optional`](#optional-dependencies) flags can be used to add a dependencies to an alternative
-field.
+[`--dev`](#development-dependencies)、[`--group`](#dependency-groups)、または [`--optional`](#optional-dependencies) フラグを使用して、代替フィールドに依存関係を追加できます。
 
-The dependency will include a constraint, e.g., `>=0.27.2`, for the most recent, compatible version
-of the package. An alternative constraint can be provided:
+依存関係には、パッケージの最新の互換性のあるバージョンに対する制約（例：`>=0.27.2`）が含まれます。別の制約を指定することもできます:
 
 ```console
 $ uv add "httpx>=0.20"
 ```
 
-When adding a dependency from a source other than a package registry, uv will add an entry in the
-sources field. For example, when adding `httpx` from GitHub:
+パッケージ レジストリ以外のソースから依存関係を追加する場合、uv はソース フィールドにエントリを追加します。たとえば、GitHub から `httpx` を追加する場合:
 
 ```console
 $ uv add "httpx @ git+https://github.com/encode/httpx"
 ```
 
-The `pyproject.toml` will include a [Git source entry](#git):
+`pyproject.toml` には [Git ソースエントリ](#git) が含まれます。
 
 ```toml title="pyproject.toml" hl_lines="8-9"
 [project]
@@ -68,7 +60,7 @@ dependencies = [
 httpx = { git = "https://github.com/encode/httpx" }
 ```
 
-If a dependency cannot be used, uv will display an error.:
+依存関係が使用できない場合、uv はエラーを表示します:
 
 ```console
 $ uv add "httpx>9999"
@@ -77,31 +69,29 @@ $ uv add "httpx>9999"
       we can conclude that your project's requirements are unsatisfiable.
 ```
 
-### Importing dependencies
+### 依存関係のインポート
 
-Dependencies declared in a `requirements.txt` file can be added to the project with the `-r` option:
+`requirements.txt` ファイルで宣言された依存関係は、`-r` オプションを使用してプロジェクトに追加できます。
 
 ```
 uv add -r requirements.txt
 ```
 
-## Removing dependencies
+## 依存関係の削除
 
-To remove a dependency:
+依存関係を削除するには:
 
 ```console
 $ uv remove httpx
 ```
 
-The `--dev`, `--group`, or `--optional` flags can be used to remove a dependency from a specific
-table.
+`--dev`、`--group`、または `--optional` フラグを使用して、特定のテーブルから依存関係を削除できます。
 
-If a [source](#dependency-sources) is defined for the removed dependency, and there are no other
-references to the dependency, it will also be removed.
+削除された依存関係に対して [source](#dependency-sources) が定義されており、依存関係への他の参照がない場合、その依存関係も削除されます。
 
-## Changing dependencies
+## 依存関係の変更
 
-To change an existing dependency, e.g., to use a different constraint for `httpx`:
+既存の依存関係を変更するには、たとえば、`httpx` に別の制約を使用するには、次のようにします:
 
 ```console
 $ uv add "httpx>0.1.0"
@@ -109,37 +99,31 @@ $ uv add "httpx>0.1.0"
 
 !!! note
 
-    In this example, we are changing the constraints for the dependency in the `pyproject.toml`.
-    The locked version of the dependency will only change if necessary to satisfy the new
-    constraints. To force the package version to update to the latest within the constraints, use `--upgrade-package <name>`, e.g.:
+    この例では、`pyproject.toml` 内の依存関係の制約を変更しています。依存関係のロックされたバージョンは、新しい制約を満たすために必要な場合にのみ変更されます。制約内でパッケージ バージョンを最新のものに強制的に更新するには、`--upgrade-package <name>` を使用します。例:
 
     ```console
     $ uv add "httpx>0.1.0" --upgrade-package httpx
     ```
 
-    See the [lockfile](./sync.md#upgrading-locked-package-versions) documentation for more details
-    on upgrading packages.
+    パッケージのアップグレードの詳細については、[ロックファイル](./sync.md#upgrading-locked-package-versions) のドキュメントを参照してください。
 
-Requesting a different dependency source will update the `tool.uv.sources` table, e.g., to use
-`httpx` from a local path during development:
+別の依存関係ソースを要求すると、`tool.uv.sources` テーブルが更新されます。たとえば、開発中にローカル パスから `httpx` を使用するなどです:
 
 ```console
 $ uv add "httpx @ ../httpx"
 ```
 
-## Platform-specific dependencies
+## プラットフォーム固有の依存関係
 
-To ensure that a dependency is only installed on a specific platform or on specific Python versions,
-use [environment markers](https://peps.python.org/pep-0508/#environment-markers).
+依存関係が特定のプラットフォームまたは特定の Python バージョンにのみインストールされるようにするには、[環境マーカー](https://peps.python.org/pep-0508/#environment-markers) を使用します。
 
-For example, to install `jax` on Linux, but not on Windows or macOS:
+たとえば、Linux に `jax` をインストールし、Windows や macOS にはインストールしない場合は、次のようにします:
 
 ```console
 $ uv add "jax; sys_platform == 'linux'"
 ```
 
-The resulting `pyproject.toml` will then include the environment marker in the dependency
-definition:
+結果として得られる `pyproject.toml` には、依存関係の定義に環境マーカーが含まれます:
 
 ```toml title="pyproject.toml" hl_lines="6"
 [project]
@@ -149,31 +133,24 @@ requires-python = ">=3.11"
 dependencies = ["jax; sys_platform == 'linux'"]
 ```
 
-Similarly, to include `numpy` on Python 3.11 and later:
+同様に、Python 3.11 以降で `numpy` を含めるには、次のようにします:
 
 ```console
 $ uv add "numpy; python_version >= '3.11'"
 ```
 
-See Python's [environment marker](https://peps.python.org/pep-0508/#environment-markers)
-documentation for a complete enumeration of the available markers and operators.
+使用可能なマーカーと演算子の完全な列挙については、Python の [環境マーカー](https://peps.python.org/pep-0508/#environment-markers) ドキュメントを参照してください。
 
 !!! tip
 
-    Dependency sources can also be [changed per-platform](#platform-specific-sources).
+    依存関係ソースは [プラットフォームごとに変更](#platform-specific-sources) することもできます。
 
-## Project dependencies
+## プロジェクトの依存関係 {#project-dependencies}
 
-The `project.dependencies` table represents the dependencies that are used when uploading to PyPI or
-building a wheel. Individual dependencies are specified using
-[dependency specifiers](https://packaging.python.org/en/latest/specifications/dependency-specifiers/)
-syntax, and the table follows the
-[PEP 621](https://packaging.python.org/en/latest/specifications/pyproject-toml/) standard.
+`project.dependencies` テーブルは、PyPI にアップロードするときや wheel をビルドするときに使用される依存関係を表します。個々の依存関係は [依存関係指定子](https://packaging.python.org/en/latest/specifications/dependency-specifiers/) 構文を使用して指定され、テーブルは [PEP 621](https://packaging.python.org/en/latest/specifications/pyproject-toml/) 標準に従います。
 
-`project.dependencies` defines the list of packages that are required for the project, along with
-the version constraints that should be used when installing them. Each entry includes a dependency
-name and version. An entry may include extras or environment markers for platform-specific packages.
-For example:
+`project.dependencies` は、プロジェクトに必要なパッケージのリストと、それらのインストール時に使用するバージョン制約を定義します。各エントリには、依存関係の名前とバージョンが含まれます。エントリには、プラットフォーム固有のパッケージの追加情報または環境マーカーが含まれる場合があります。
+例:
 
 ```toml title="pyproject.toml"
 [project]
@@ -193,14 +170,11 @@ dependencies = [
 ]
 ```
 
-## Dependency sources
+## 依存元 {#dependency-sources}
 
-The `tool.uv.sources` table extends the standard dependency tables with alternative dependency
-sources, which are used during development.
+`tool.uv.sources` テーブルは、開発中に使用される代替依存関係ソースで標準依存関係テーブルを拡張します。
 
-Dependency sources add support common patterns that are not supported by the `project.dependencies`
-standard, like editable installations and relative paths. For example, to install `foo` from a
-directory relative to the project root:
+依存関係ソースは、編集可能なインストールや相対パスなど、`project.dependencies` 標準ではサポートされていない一般的なパターンのサポートを追加します。たとえば、プロジェクト ルートを基準としたディレクトリから `foo` をインストールするには、次のようにします:
 
 ```toml title="pyproject.toml" hl_lines="7"
 [project]
@@ -212,29 +186,27 @@ dependencies = ["foo"]
 foo = { path = "./packages/foo" }
 ```
 
-The following dependency sources are supported by uv:
+uv では次の依存関係ソースがサポートされています:
 
-- [Index](#index): A package resolved from a specific package index.
-- [Git](#git): A Git repository.
-- [URL](#url): A remote wheel or source distribution.
-- [Path](#path): A local wheel, source distribution, or project directory.
-- [Workspace](#workspace-member): A member of the current workspace.
+- [Index](#index):特定のパッケージ インデックスから解決されたパッケージ。
+- [Git](#git): Git リポジトリ。
+- [URL](#url): リモートホイールまたはソース配布。
+- [Path](#path): ローカル wheel、ソースディストリビューション、またはプロジェクトディレクトリ。
+- [Workspace](#workspace-member): 現在のワークスペースのメンバー。
 
 !!! important
 
-    Sources are only respected by uv. If another tool is used, only the definitions in the standard
-    project tables will be used. If another tool is being used for development, any metadata
-    provided in the source table will need to be re-specified in the other tool's format.
+    ソースは uv によってのみ尊重されます。別のツールが使用されている場合は、標準プロジェクトテーブルの定義のみが使用されます。開発に別のツールが使用されている場合は、ソーステーブルで提供されるメタデータを他のツールの形式で再指定する必要があります。
 
 ### Index
 
-To add Python package from a specific index, use the `--index` option:
+特定のインデックスから Python パッケージを追加するには、`--index` オプションを使用します:
 
 ```console
 $ uv add torch --index pytorch=https://download.pytorch.org/whl/cpu
 ```
 
-uv will store the index in `[[tool.uv.index]]` and add a `[tool.uv.sources]` entry:
+uv はインデックスを `[[tool.uv.index]]` に保存し、 `[tool.uv.sources]` エントリを追加します:
 
 ```toml title="pyproject.toml"
 [project]
@@ -250,16 +222,11 @@ url = "https://download.pytorch.org/whl/cpu"
 
 !!! tip
 
-    The above example will only work on x86-64 Linux, due to the specifics of the PyTorch index.
-    See the [PyTorch guide](../../guides/integration/pytorch.md) for more information about setting
-    up PyTorch.
+    上記の例は、PyTorch インデックスの特性により、x86-64 Linux でのみ動作します。PyTorch の設定の詳細については、[PyTorch ガイド](../../guides/integration/pytorch.md) を参照してください。
 
-Using an `index` source _pins_ a package to the given index — it will not be downloaded from other
-indexes.
+`index` ソースを使用すると、パッケージが指定されたインデックスに _固定_ され、他のインデックスからはダウンロードされなくなります。
 
-When defining an index, an `explicit` flag can be included to indicate that the index should _only_
-be used for packages that explicitly specify it in `tool.uv.sources`. If `explicit` is not set,
-other packages may be resolved from the index, if not found elsewhere.
+インデックスを定義するときに、`explicit` フラグを含めることができます。これは、インデックスが `tool.uv.sources` で明示的に指定されているパッケージに対してのみ使用されることを示します。`explicit` が設定されていない場合、他の場所で見つからない場合は、他のパッケージがインデックスから解決される可能性があります。
 
 ```toml title="pyproject.toml" hl_lines="3"
 [[tool.uv.index]]
@@ -270,10 +237,9 @@ explicit = true
 
 ### Git
 
-To add a Git dependency source, prefix a Git-compatible URL (i.e., that you would use with
-`git clone`) with `git+`.
+Git 依存関係ソースを追加するには、Git 互換の URL (つまり、`git clone` で使用する URL) の前に `git+` を付けます。
 
-For example:
+例:
 
 ```console
 $ uv add git+https://github.com/encode/httpx
@@ -287,7 +253,7 @@ dependencies = ["httpx"]
 httpx = { git = "https://github.com/encode/httpx" }
 ```
 
-Specific Git references can be requested, e.g., a tag:
+特定の Git 参照 (タグなど) をリクエストできます:
 
 ```console
 $ uv add git+https://github.com/encode/httpx --tag 0.27.0
@@ -301,7 +267,7 @@ dependencies = ["httpx"]
 httpx = { git = "https://github.com/encode/httpx", tag = "0.27.0" }
 ```
 
-Or, a branch:
+または、ブランチ:
 
 ```console
 $ uv add git+https://github.com/encode/httpx --branch main
@@ -315,7 +281,7 @@ dependencies = ["httpx"]
 httpx = { git = "https://github.com/encode/httpx", branch = "main" }
 ```
 
-Or, a revision (commit):
+または、リビジョン（コミット）:
 
 ```console
 $ uv add git+https://github.com/encode/httpx --rev 326b9431c761e1ef1e00b9f760d1f654c8db48c6
@@ -329,7 +295,7 @@ dependencies = ["httpx"]
 httpx = { git = "https://github.com/encode/httpx", rev = "326b9431c761e1ef1e00b9f760d1f654c8db48c6" }
 ```
 
-A `subdirectory` may be specified if the package isn't in the repository root:
+パッケージがリポジトリのルートにない場合は、`subdirectory` を指定できます:
 
 ```console
 $ uv add git+https://github.com/langchain-ai/langchain#subdirectory=libs/langchain
@@ -345,17 +311,15 @@ langchain = { git = "https://github.com/langchain-ai/langchain", subdirectory = 
 
 ### URL
 
-To add a URL source, provide a `https://` URL to either a wheel (ending in `.whl`) or a source
-distribution (typically ending in `.tar.gz` or `.zip`; see
-[here](../../concepts/resolution.md#source-distribution) for all supported formats).
+URL ソースを追加するには、wheel  (`.whl` で終わる) またはソース配布 (通常は `.tar.gz` または `.zip` で終わる。サポートされているすべての形式については、[こちら](../../concepts/resolution.md#source-distribution) を参照してください) への `https://` URL を指定します。
 
-For example:
+例:
 
 ```console
 $ uv add "https://files.pythonhosted.org/packages/5c/2d/3da5bdf4408b8b2800061c339f240c1802f2e82d55e50bd39c5a881f47f0/httpx-0.27.0.tar.gz"
 ```
 
-Will result in a `pyproject.toml` with:
+`pyproject.toml` は次のようになります:
 
 ```toml title="pyproject.toml" hl_lines="5"
 [project]
@@ -365,24 +329,19 @@ dependencies = ["httpx"]
 httpx = { url = "https://files.pythonhosted.org/packages/5c/2d/3da5bdf4408b8b2800061c339f240c1802f2e82d55e50bd39c5a881f47f0/httpx-0.27.0.tar.gz" }
 ```
 
-URL dependencies can also be manually added or edited in the `pyproject.toml` with the
-`{ url = <url> }` syntax. A `subdirectory` may be specified if the source distribution isn't in the
-archive root.
+URL 依存関係は、`{ url = <url> }` 構文を使用して `pyproject.toml` に手動で追加または編集することもできます。ソース配布がアーカイブ ルートにない場合は、`subdirectory` を指定できます。
 
 ### Path
 
-To add a path source, provide the path of a wheel (ending in `.whl`), a source distribution
-(typically ending in `.tar.gz` or `.zip`; see
-[here](../../concepts/resolution.md#source-distribution) for all supported formats), or a directory
-containing a `pyproject.toml`.
+path ソースを追加するには、wheel のパス (`.whl` で終わる)、ソースディストリビューション (通常は `.tar.gz` または `.zip` で終わる。サポートされているすべての形式については、[こちら](../../concepts/resolution.md#source-distribution) を参照)、または `pyproject.toml` を含むディレクトリを指定します。
 
-For example:
+例:
 
 ```console
 $ uv add /example/foo-0.1.0-py3-none-any.whl
 ```
 
-Will result in a `pyproject.toml` with:
+`pyproject.toml` は次のようになります:
 
 ```toml title="pyproject.toml"
 [project]
@@ -392,13 +351,13 @@ dependencies = ["foo"]
 foo = { path = "/example/foo-0.1.0-py3-none-any.whl" }
 ```
 
-The path may also be a relative path:
+パスは相対パスでも構いません:
 
 ```console
 $ uv add ./foo-0.1.0-py3-none-any.whl
 ```
 
-Or, a path to a project directory:
+または、プロジェクト ディレクトリへのパス:
 
 ```console
 $ uv add ~/projects/bar/
@@ -406,14 +365,13 @@ $ uv add ~/projects/bar/
 
 !!! important
 
-    An [editable installation](#editable-dependencies) is not used for path dependencies by
-    default. An editable installation may be requested for project directories:
+    [編集可能なインストール](#editable-dependencies)は、デフォルトではパス依存関係には使用されません。編集可能なインストールは、プロジェクト ディレクトリに対して要求される場合があります:
 
     ```console
     $ uv add --editable ../projects/bar/
     ```
 
-    Which will result in a `pyproject.toml` with:
+    結果は次の内容の `pyproject.toml` になります:
 
     ```toml title="pyproject.toml"
     [project]
@@ -423,8 +381,7 @@ $ uv add ~/projects/bar/
     bar = { path = "../projects/bar", editable = true }
     ```
 
-    Similarly, if a project is marked as a [non-package](./config.md#build-systems), but you'd
-    like to install it in the environment as a package, set `package = true` on the source:
+    同様に、プロジェクトが [非パッケージ](./config.md#build-systems) としてマークされているが、環境にパッケージとしてインストールしたい場合は、ソースで `package = true` を設定します:
 
     ```toml title="pyproject.toml"
     [project]
@@ -434,15 +391,11 @@ $ uv add ~/projects/bar/
     bar = { path = "../projects/bar", package = true }
     ```
 
-    For multiple packages in the same repository, [_workspaces_](./workspaces.md) may be a better
-    fit.
+    同じリポジトリ内に複数のパッケージがある場合は、[_workspaces_](./workspaces.md) の方が適している可能性があります。
 
-### Workspace member
+### ワークスペースメンバー {#workspace-member}
 
-To declare a dependency on a workspace member, add the member name with `{ workspace = true }`. All
-workspace members must be explicitly stated. Workspace members are always
-[editable](#editable-dependencies) . See the [workspace](./workspaces.md) documentation for more
-details on workspaces.
+ワークスペース メンバーへの依存関係を宣言するには、`{workspace = true }` を使用してメンバー名を追加します。すべてのワークスペース メンバーを明示的に指定する必要があります。ワークスペース メンバーは常に [編集可能](#editable-dependencies) です。ワークスペースの詳細については、[ワークスペース](./workspaces.md) のドキュメントを参照してください。
 
 ```toml title="pyproject.toml"
 [project]
@@ -457,13 +410,11 @@ members = [
 ]
 ```
 
-### Platform-specific sources
+### プラットフォーム固有のソース {#platform-specific-sources}
 
-You can limit a source to a given platform or Python version by providing
-[dependency specifiers](https://packaging.python.org/en/latest/specifications/dependency-specifiers/)-compatible
-environment markers for the source.
+ソースに [依存関係指定子](https://packaging.python.org/en/latest/specifications/dependency-specifiers/) 互換の環境マーカーを指定することで、ソースを特定のプラットフォームまたは Python バージョンに制限できます。
 
-For example, to pull `httpx` from GitHub, but only on macOS, use the following:
+たとえば、macOS でのみ GitHub から `httpx` をプルするには、次のようにします:
 
 ```toml title="pyproject.toml" hl_lines="8"
 [project]
@@ -473,16 +424,13 @@ dependencies = ["httpx"]
 httpx = { git = "https://github.com/encode/httpx", tag = "0.27.2", marker = "sys_platform == 'darwin'" }
 ```
 
-By specifying the marker on the source, uv will still include `httpx` on all platforms, but will
-download the source from GitHub on macOS, and fall back to PyPI on all other platforms.
+ソースにマーカーを指定すると、uv はすべてのプラットフォームで `httpx` を含めますが、macOS では GitHub からソースをダウンロードし、他のすべてのプラットフォームでは PyPI にフォールバックします。
 
-### Multiple sources
+### 複数のソース
 
-You can specify multiple sources for a single dependency by providing a list of sources,
-disambiguated by [PEP 508](https://peps.python.org/pep-0508/#environment-markers)-compatible
-environment markers.
+[PEP 508](https://peps.python.org/pep-0508/#environment-markers) 互換の環境マーカーによって曖昧さが解消されたソースのリストを提供することで、単一の依存関係に対して複数のソースを指定できます。
 
-For example, to pull in different `httpx` tags on macOS vs. Linux:
+たとえば、macOS と Linux で異なる `httpx` タグを取得するには、次のようにします:
 
 ```toml title="pyproject.toml" hl_lines="8-9 13-14"
 [project]
@@ -495,8 +443,7 @@ httpx = [
 ]
 ```
 
-This strategy extends to using different indexes based on environment markers. For example, to
-install `torch` from different PyTorch indexes based on the platform:
+この戦略は、環境マーカーに基づいて異なるインデックスを使用することにまで拡張されます。たとえば、プラットフォームに基づいて異なる PyTorch インデックスから `torch` をインストールするには、次のようにします:
 
 ```toml title="pyproject.toml" hl_lines="6-7"
 [project]
@@ -517,32 +464,23 @@ name = "torch-gpu"
 url = "https://download.pytorch.org/whl/cu124"
 ```
 
-### Disabling sources
+### ソースを無効にする
 
-To instruct uv to ignore the `tool.uv.sources` table (e.g., to simulate resolving with the package's
-published metadata), use the `--no-sources` flag:
+uv に `tool.uv.sources` テーブルを無視するように指示するには (たとえば、パッケージの公開メタデータによる解決をシミュレートするため)、 `--no-sources` フラグを使用します:
 
 ```console
 $ uv lock --no-sources
 ```
 
-The use of `--no-sources` will also prevent uv from discovering any
-[workspace members](#workspace-member) that could satisfy a given dependency.
+`--no-sources` を使用すると、uv が特定の依存関係を満たす可能性のある [ワークスペース メンバー](#workspace-member) を発見することもできなくなります。
 
-## Optional dependencies
+## オプションの依存関係 {#optional-dependencies}
 
-It is common for projects that are published as libraries to make some features optional to reduce
-the default dependency tree. For example, Pandas has an
-[`excel` extra](https://pandas.pydata.org/docs/getting_started/install.html#excel-files) and a
-[`plot` extra](https://pandas.pydata.org/docs/getting_started/install.html#visualization) to avoid
-installation of Excel parsers and `matplotlib` unless someone explicitly requires them. Extras are
-requested with the `package[<extra>]` syntax, e.g., `pandas[plot, excel]`.
+ライブラリとして公開されるプロジェクトでは、デフォルトの依存関係ツリーを減らすために、一部の機能をオプションにすることが一般的です。たとえば、Pandas には [`excel` エクストラ](https://pandas.pydata.org/docs/getting_started/install.html#excel-files) と [`plot` エクストラ](https://pandas.pydata.org/docs/getting_started/install.html#visualization) があり、明示的に要求されない限り、Excel パーサーと `matplotlib` のインストールを回避します。エクストラは、`package[<extra>]` 構文を使用して要求されます (例: `pandas[plot, excel]`)。
 
-Optional dependencies are specified in `[project.optional-dependencies]`, a TOML table that maps
-from extra name to its dependencies, following
-[dependency specifiers](#dependency-specifiers-pep-508) syntax.
+オプションの依存関係は、[依存関係指定子](#dependency-specifiers-pep-508)構文に従って、追加の名前からその依存関係にマッピングする TOML テーブルである `[project.optional-dependencies]` で指定されます。
 
-Optional dependencies can have entries in `tool.uv.sources` the same as normal dependencies.
+オプションの依存関係は、通常の依存関係と同じように `tool.uv.sources` にエントリを持つことができます。
 
 ```toml title="pyproject.toml"
 [project]
@@ -563,7 +501,7 @@ excel = [
 ]
 ```
 
-To add an optional dependency, use the `--optional <extra>` option:
+オプションの依存関係を追加するには、`--optional <extra>` オプションを使用します:
 
 ```console
 $ uv add httpx --optional network
@@ -571,11 +509,9 @@ $ uv add httpx --optional network
 
 !!! note
 
-    If you have optional dependencies that conflict with one another, resolution will fail
-    unless you explicitly [declare them as conflicting](./config.md#conflicting-dependencies).
+    互いに競合するオプションの依存関係がある場合、明示的に [競合していると宣言](./config.md#conflicting-dependencies) しない限り、解決は失敗します。
 
-Sources can also be declared as applying only to a specific optional dependency. For example, to
-pull `torch` from different PyTorch indexes based on an optional `cpu` or `gpu` extra:
+ソースは、特定のオプションの依存関係にのみ適用されるように宣言することもできます。たとえば、オプションの `cpu` または `gpu` エクストラに基づいて、異なる PyTorch インデックスから `torch` をプルするには、次のようにします:
 
 ```toml title="pyproject.toml"
 [project]
@@ -604,22 +540,19 @@ name = "torch-gpu"
 url = "https://download.pytorch.org/whl/cu124"
 ```
 
-## Development dependencies
+## 開発依存関係 {#development-dependencies}
 
-Unlike optional dependencies, development dependencies are local-only and will _not_ be included in
-the project requirements when published to PyPI or other indexes. As such, development dependencies
-are not included in the `[project]` table.
+オプションの依存関係とは異なり、開発依存関係はローカルのみであり、PyPI または他のインデックスに公開されるときにプロジェクト要件に含まれません。そのため、開発依存関係は `[project]` テーブルに含まれません。
 
-Development dependencies can have entries in `tool.uv.sources` the same as normal dependencies.
+開発依存関係は、通常の依存関係と同じように `tool.uv.sources` にエントリを持つことができます。
 
-To add a development dependency, use the `--dev` flag:
+開発依存関係を追加するには、`--dev` フラグを使用します:
 
 ```console
 $ uv add --dev pytest
 ```
 
-uv uses the `[dependency-groups]` table (as defined in [PEP 735](https://peps.python.org/pep-0735/))
-for declaration of development dependencies. The above command will create a `dev` group:
+uv は開発依存関係の宣言に `[dependency-groups]` テーブル ([PEP 735](https://peps.python.org/pep-0735/) で定義) を使用します。上記のコマンドは `dev` グループを作成します:
 
 ```toml title="pyproject.toml"
 [dependency-groups]
@@ -628,21 +561,19 @@ dev = [
 ]
 ```
 
-The `dev` group is special-cased; there are `--dev`, `--only-dev`, and `--no-dev` flags to toggle
-inclusion or exclusion of its dependencies. See `--no-default-groups` to disable all default groups
-instead. Additionally, the `dev` group is [synced by default](#default-groups).
+`dev` グループは特別です。`--dev`、`--only-dev`、および `--no-dev` フラグを使用して、依存関係を含めるか除外するかを切り替えることができます。代わりにすべてのデフォルト グループを無効にするには、`--no-default-groups` を参照してください。また、`dev` グループは [デフォルトで同期されます](#default-groups)。
 
-### Dependency groups
+### 依存関係グループ {#dependency-groups}
 
-Development dependencies can be divided into multiple groups, using the `--group` flag.
+開発依存関係は、`--group` フラグを使用して複数のグループに分割できます。
 
-For example, to add a development dependency in the `lint` group:
+たとえば、`lint` グループに開発依存関係を追加するには、次のようにします:
 
 ```console
 $ uv add --group lint ruff
 ```
 
-Which results in the following `[dependency-groups]` definition:
+その結果、次の `[dependency-groups]` 定義が生成されます:
 
 ```toml title="pyproject.toml"
 [dependency-groups]
@@ -654,36 +585,30 @@ lint = [
 ]
 ```
 
-Once groups are defined, the `--all-groups`, `--no-default-groups`, `--group`, `--only-group`, and
-`--no-group` options can be used to include or exclude their dependencies.
+グループが定義されたら、`--all-groups`、`--no-default-groups`、`--group`、`--only-group`、および `--no-group` オプションを使用して、依存関係を含めたり除外したりできます。
 
 !!! tip
 
-    The `--dev`, `--only-dev`, and `--no-dev` flags are equivalent to `--group dev`,
-    `--only-group dev`, and `--no-group dev` respectively.
+    `--dev`、`--only-dev`、および `--no-dev` フラグは、それぞれ `--group dev`、`--only-group dev`、および `--no-group dev` と同等です。
 
-uv requires that all dependency groups are compatible with each other and resolves all groups
-together when creating the lockfile.
+uv では、すべての依存関係グループが相互に互換性があることが要求され、ロックファイルを作成するときにすべてのグループが一緒に解決されます。
 
-If dependencies declared in one group are not compatible with those in another group, uv will fail
-to resolve the requirements of the project with an error.
+あるグループで宣言された依存関係が別のグループの依存関係と互換性がない場合、uv はエラーを出してプロジェクトの要件を解決できません。
 
 !!! note
 
-    If you have dependency groups that conflict with one another, resolution will fail
-    unless you explicitly [declare them as conflicting](./config.md#conflicting-dependencies).
+    相互に競合する依存関係グループがある場合、明示的に [競合していると宣言](./config.md#conflicting-dependencies) しない限り、解決は失敗します。
 
-### Default groups
+### デフォルトグループ {#default-groups}
 
-By default, uv includes the `dev` dependency group in the environment (e.g., during `uv run` or
-`uv sync`). The default groups to include can be changed using the `tool.uv.default-groups` setting.
+デフォルトでは、uv は環境に `dev` 依存グループを含めます (例: `uv run` または `uv sync` 中)。含めるデフォルトのグループは、`tool.uv.default-groups` 設定を使用して変更できます。
 
 ```toml title="pyproject.toml"
 [tool.uv]
 default-groups = ["dev", "foo"]
 ```
 
-To enable all dependencies groups by default, use `"all"` instead of listing group names:
+すべての依存関係グループをデフォルトで有効にするには、グループ名をリストする代わりに `"all"` を使用します:
 
 ```toml title="pyproject.toml"
 [tool.uv]
@@ -692,13 +617,11 @@ default-groups = "all"
 
 !!! tip
 
-    To disable this behaviour during `uv run` or `uv sync`, use `--no-default-groups`.
-    To exclude a specific default group, use `--no-group <name>`.
+    `uv run` または `uv sync` 中にこの動作を無効にするには、`--no-default-groups` を使用します。特定のデフォルト グループを除外するには、`--no-group <name>` を使用します。
 
-### Legacy `dev-dependencies`
+### レガシー `dev-dependencies`
 
-Before `[dependency-groups]` was standardized, uv used the `tool.uv.dev-dependencies` field to
-specify development dependencies, e.g.:
+`[dependency-groups]` が標準化される前は、uv は開発依存関係を指定するために `tool.uv.dev-dependencies` フィールドを使用していました。例:
 
 ```toml title="pyproject.toml"
 [tool.uv]
@@ -707,23 +630,17 @@ dev-dependencies = [
 ]
 ```
 
-Dependencies declared in this section will be combined with the contents in the
-`dependency-groups.dev`. Eventually, the `dev-dependencies` field will be deprecated and removed.
+このセクションで宣言された依存関係は、`dependency-groups.dev` の内容と結合されます。最終的には、`dev-dependencies` フィールドは非推奨となり、削除されます。
 
 !!! note
 
-    If a `tool.uv.dev-dependencies` field exists, `uv add --dev` will use the existing section
-    instead of adding a new `dependency-groups.dev` section.
+    `tool.uv.dev-dependencies` フィールドが存在する場合、`uv add --dev` は新しい `dependency-groups.dev` セクションを追加する代わりに既存のセクションを使用します。
 
-## Build dependencies
+## ビルドの依存関係
 
-If a project is structured as [Python package](./config.md#build-systems), it may declare
-dependencies that are required to build the project, but not required to run it. These dependencies
-are specified in the `[build-system]` table under `build-system.requires`, following
-[PEP 518](https://peps.python.org/pep-0518/).
+プロジェクトが [Python パッケージ](./config.md#build-systems) として構造化されている場合、プロジェクトのビルドに必要な依存関係を宣言できますが、実行には必要ありません。これらの依存関係は、[PEP 518](https://peps.python.org/pep-0518/) に従って、`build-system.requires` の下の `[build-system]` テーブルで指定されます。
 
-For example, if a project uses `setuptools` as its build backend, it should declare `setuptools` as
-a build dependency:
+たとえば、プロジェクトがビルド バックエンドとして `setuptools` を使用する場合、ビルド依存関係として `setuptools` を宣言する必要があります:
 
 ```toml title="pyproject.toml"
 [project]
@@ -735,8 +652,7 @@ requires = ["setuptools>=42"]
 build-backend = "setuptools.build_meta"
 ```
 
-By default, uv will respect `tool.uv.sources` when resolving build dependencies. For example, to use
-a local version of `setuptools` for building, add the source to `tool.uv.sources`:
+デフォルトでは、uv はビルドの依存関係を解決するときに `tool.uv.sources` を尊重します。たとえば、ビルドに `setuptools` のローカル バージョンを使用するには、ソースを `tool.uv.sources` に追加します:
 
 ```toml title="pyproject.toml"
 [project]
@@ -751,68 +667,47 @@ build-backend = "setuptools.build_meta"
 setuptools = { path = "./packages/setuptools" }
 ```
 
-When publishing a package, we recommend running `uv build --no-sources` to ensure that the package
-builds correctly when `tool.uv.sources` is disabled, as is the case when using other build tools,
-like [`pypa/build`](https://github.com/pypa/build).
+パッケージを公開するときは、[`pypa/build`](https://github.com/pypa/build) などの他のビルドツールを使用する場合と同様に、`tool.uv.sources` が無効になっているときにパッケージが正しくビルドされるように、`uv build --no-sources` を実行することをお勧めします。
 
-## Editable dependencies
+## 編集可能な依存関係 {#editable-dependencies}
 
-A regular installation of a directory with a Python package first builds a wheel and then installs
-that wheel into your virtual environment, copying all source files. When the package source files
-are edited, the virtual environment will contain outdated versions.
+Python パッケージを含むディレクトリの通常のインストールでは、最初に wheel が構築され、次にその wheel が仮想環境にインストールされ、すべてのソースファイルがコピーされます。パッケージソースファイルが編集されると、仮想環境に古いバージョンが含まれることになります。
 
-Editable installations solve this problem by adding a link to the project within the virtual
-environment (a `.pth` file), which instructs the interpreter to include the source files directly.
+編集可能なインストールでは、仮想環境内のプロジェクトへのリンク (`.pth` ファイル) を追加することでこの問題を解決し、インタープリターにソースファイルを直接含めるように指示します。
 
-There are some limitations to editables (mainly: the build backend needs to support them, and native
-modules aren't recompiled before import), but they are useful for development, as the virtual
-environment will always use the latest changes to the package.
+編集可能ファイルにはいくつかの制限があります (主に、ビルド バックエンドが編集可能ファイルをサポートする必要があり、ネイティブ モジュールはインポート前に再コンパイルされない) が、仮想環境では常にパッケージの最新の変更が使用されるため、開発には便利です。
 
-uv uses editable installation for workspace packages by default.
+uv は、デフォルトでワークスペース パッケージに編集可能なインストールを使用します。
 
-To add an editable dependency, use the `--editable` flag:
+編集可能な依存関係を追加するには、`--editable` フラグを使用します:
 
 ```console
 $ uv add --editable ./path/foo
 ```
 
-Or, to opt-out of using an editable dependency in a workspace:
+または、ワークスペースで編集可能な依存関係の使用をオプトアウトするには、次の手順を実行します:
 
 ```console
 $ uv add --no-editable ./path/foo
 ```
 
-## Dependency specifiers (PEP 508)
+## 依存関係指定子 (PEP 508) {#dependency-specifiers-pep-508}
 
-uv uses
-[dependency specifiers](https://packaging.python.org/en/latest/specifications/dependency-specifiers/),
-previously known as [PEP 508](https://peps.python.org/pep-0508/). A dependency specifier is composed
-of, in order:
+uv は [依存関係指定子](https://packaging.python.org/en/latest/specifications/dependency-specifiers/) を使用します。これは以前は [PEP 508](https://peps.python.org/pep-0508/) と呼ばれていました。依存関係指定子は、次の順序で構成されます:
 
-- The dependency name
-- The extras you want (optional)
-- The version specifier
-- An environment marker (optional)
+- 依存関係名
+- ご希望の追加機能（オプション）
+- バージョン指定子
+- 環境マーカー（オプション）
 
-The version specifiers are comma separated and added together, e.g., `foo >=1.2.3,<2,!=1.4.0` is
-interpreted as "a version of `foo` that's at least 1.2.3, but less than 2, and not 1.4.0".
+バージョン指定子はコンマで区切られ、一緒に追加されます。たとえば、`foo >=1.2.3,<2,!=1.4.0` は、「`foo` のバージョンが少なくとも 1.2.3 だが 2 未満で、1.4.0 ではない」と解釈されます。
 
-Specifiers are padded with trailing zeros if required, so `foo ==2` matches foo 2.0.0, too.
+必要に応じて指定子の末尾にゼロが埋め込まれるため、`foo ==2` は foo 2.0.0 にも一致します。
 
-A star can be used for the last digit with equals, e.g., `foo ==2.1.*` will accept any release from
-the 2.1 series. Similarly, `~=` matches where the last digit is equal or higher, e.g., `foo ~=1.2`
-is equal to `foo >=1.2,<2`, and `foo ~=1.2.3` is equal to `foo >=1.2.3,<1.3`.
+最後の桁にアスタリスク (*) を等号と共に使用できます。たとえば、`foo ==2.1.*` は 2.1 シリーズのリリースをすべて受け入れます。同様に、`~=` は最後の桁が等しいかそれ以上の桁と一致します。たとえば、`foo ~=1.2` は `foo >=1.2,<2` と等しく、`foo ~=1.2.3` は `foo >=1.2.3,<1.3` と等しくなります。
 
-Extras are comma-separated in square bracket between name and version, e.g.,
-`pandas[excel,plot] ==2.2`. Whitespace between extra names is ignored.
+追加情報は、名前とバージョンの間に角括弧でコンマで区切られます (例: `pandas[excel,plot] ==2.2`)。追加情報の名前間の空白は無視されます。
 
-Some dependencies are only required in specific environments, e.g., a specific Python version or
-operating system. For example to install the `importlib-metadata` backport for the
-`importlib.metadata` module, use `importlib-metadata >=7.1.0,<8; python_version < '3.10'`. To
-install `colorama` on Windows (but omit it on other platforms), use
-`colorama >=0.4.6,<5; platform_system == "Windows"`.
+一部の依存関係は、特定の Python バージョンやオペレーティング システムなど、特定の環境でのみ必要です。たとえば、`importlib.metadata` モジュールの `importlib-metadata` バックポートをインストールするには、`importlib-metadata >=7.1.0,<8; python_version < '3.10'` を使用します。Windows に `colorama` をインストールするには (他のプラットフォームでは省略します)、`colorama >=0.4.6,<5; platform_system == "Windows"` を使用します。
 
-Markers are combined with `and`, `or`, and parentheses, e.g.,
-`aiohttp >=3.7.4,<4; (sys_platform != 'win32' or implementation_name != 'pypy') and python_version >= '3.10'`.
-Note that versions within markers must be quoted, while versions _outside_ of markers must _not_ be
-quoted.
+マーカーは、`and`、`or`、括弧で結合されます。例: `aiohttp >=3.7.4,<4; (sys_platform != 'win32' or implementation_name != 'pypy') and python_version >= '3.10'`。マーカー内のバージョンは引用符で囲む必要がありますが、マーカーの _外側_ のバージョンは引用符で囲んではならないことに注意してください。

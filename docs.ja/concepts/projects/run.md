@@ -1,18 +1,14 @@
-# Running commands in projects
+# プロジェクト内でのコマンドの実行
 
-When working on a project, it is installed into the virtual environment at `.venv`. This environment
-is isolated from the current shell by default, so invocations that require the project, e.g.,
-`python -c "import example"`, will fail. Instead, use `uv run` to run commands in the project
-environment:
+プロジェクトで作業する場合、`.venv` の仮想環境にインストールされます。この環境はデフォルトで現在のシェルから分離されているため、`python -c "import example"` などのプロジェクトを必要とする呼び出しは失敗します。代わりに、`uv run` を使用してプロジェクト環境でコマンドを実行します:
 
 ```console
 $ uv run python -c "import example"
 ```
 
-When using `run`, uv will ensure that the project environment is up-to-date before running the given
-command.
+`run` を使用する場合、uv は指定されたコマンドを実行する前にプロジェクト環境が最新であることを確認します。
 
-The given command can be provided by the project environment or exist outside of it, e.g.:
+指定されたコマンドはプロジェクト環境によって提供されるか、その外部に存在する可能性があります。例:
 
 ```console
 $ # Presuming the project provides `example-cli`
@@ -22,12 +18,11 @@ $ # Running a `bash` script that requires the project to be available
 $ uv run bash scripts/foo.sh
 ```
 
-## Requesting additional dependencies
+## 追加の依存関係のリクエスト {#requesting-additional-dependencies}
 
-Additional dependencies or different versions of dependencies can be requested per invocation.
+呼び出しごとに追加の依存関係または異なるバージョンの依存関係を要求できます。
 
-The `--with` option is used to include a dependency for the invocation, e.g., to request a different
-version of `httpx`:
+`--with` オプションは、呼び出しの依存関係を含めるために使用されます。たとえば、`httpx` の別のバージョンを要求する場合などです:
 
 ```console
 $ uv run --with httpx==0.26.0 python -c "import httpx; print(httpx.__version__)"
@@ -36,16 +31,13 @@ $ uv run --with httpx==0.25.0 python -c "import httpx; print(httpx.__version__)"
 0.25.0
 ```
 
-The requested version will be respected regardless of the project's requirements. For example, even
-if the project requires `httpx==0.24.0`, the output above would be the same.
+プロジェクトの要件に関係なく、要求されたバージョンが尊重されます。たとえば、プロジェクトで `httpx==0.24.0` が必要な場合でも、上記の出力は同じになります。
 
-## Running scripts
+## スクリプトの実行
 
-Scripts that declare inline metadata are automatically executed in environments isolated from the
-project. See the [scripts guide](../../guides/scripts.md#declaring-script-dependencies) for more
-details.
+インライン メタデータを宣言するスクリプトは、プロジェクトから分離された環境で自動的に実行されます。詳細については、[スクリプト ガイド](../../guides/scripts.md#declaring-script-dependencies) を参照してください。
 
-For example, given a script:
+たとえば、次のようなスクリプトがあるとします:
 
 ```python title="example.py"
 # /// script
@@ -61,39 +53,30 @@ data = resp.json()
 print([(k, v["title"]) for k, v in data.items()][:10])
 ```
 
-The invocation `uv run example.py` would run _isolated_ from the project with only the given
-dependencies listed.
+呼び出し `uv run example.py` は、指定された依存関係のみがリストされた状態で、プロジェクトから _分離_ して実行されます。
 
-## Legacy Windows Scripts
+## レガシー Windows スクリプト
 
-Support is provided for
-[legacy setuptools scripts](https://packaging.python.org/en/latest/guides/distributing-packages-using-setuptools/#scripts).
-These types of scripts are additional files installed by setuptools in `.venv\Scripts`.
+[レガシー setuptools スクリプト](https://packaging.python.org/en/latest/guides/distributing-packages-using-setuptools/#scripts)のサポートが提供されています。これらのタイプのスクリプトは、setuptools によって `.venv\Scripts` にインストールされる追加ファイルです。
 
-Currently only legacy scripts with the `.ps1`, `.cmd`, and `.bat` extensions are supported.
+現在、`.ps1`、`.cmd`、および `.bat` 拡張子を持つレガシー スクリプトのみがサポートされています。
 
-For example, below is an example running a Command Prompt script.
+たとえば、以下はコマンド プロンプト スクリプトを実行する例です。
 
 ```console
 $ uv run --with nuitka==2.6.7 -- nuitka.cmd --version
 ```
 
-In addition, you don't need to specify the extension. `uv` will automatically look for files ending
-in `.ps1`, `.cmd`, and `.bat` in that order of execution on your behalf.
+また、拡張子を指定する必要もありません。`uv` は、`.ps1`、`.cmd`、`.bat` で終わるファイルを実行順に自動的に検索します。
 
 ```console
 $ uv run --with nuitka==2.6.7 -- nuitka --version
 ```
 
-## Signal handling
+## シグナルのハンドリング
 
-uv does not cede control of the process to the spawned command in order to provide better error
-messages on failure. Consequently, uv is responsible for forwarding some signals to the child
-process the requested command runs in.
+uv は、失敗時に適切なエラー メッセージを提供するために、生成されたコマンドにプロセスの制御を譲りません。その結果、uv は、要求されたコマンドが実行される子プロセスにいくつかのシグナルを転送する役割を担います。
 
-On Unix systems, uv will forward SIGINT and SIGTERM to the child process. Since shells send SIGINT
-to the foreground process group on Ctrl-C, uv will only forward a SIGINT to the child process if it
-is seen more than once or the child process group differs from uv's.
+Unix システムでは、uv は SIGINT と SIGTERM を子プロセスに転送します。シェルは Ctrl-C でフォアグラウンド プロセス グループに SIGINT を送信するため、uv は SIGINT が複数回検出された場合、または子プロセス グループが uv と異なる場合にのみ、子プロセスに SIGINT を転送します。
 
-On Windows, these concepts do not apply and uv ignores Ctrl-C events, deferring handling to the
-child process so it can exit cleanly.
+Windows では、これらの概念は適用されず、uv は Ctrl-C イベントを無視し、子プロセスに処理を延期して、正常に終了できるようにします。

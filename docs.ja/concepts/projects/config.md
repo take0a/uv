@@ -1,11 +1,10 @@
-# Configuring projects
+# プロジェクトの設定
 
-## Python version requirement
+## Python バージョン要件 {#python-version-requirement}
 
-Projects may declare the Python versions supported by the project in the `project.requires-python`
-field of the `pyproject.toml`.
+プロジェクトでは、`pyproject.toml` の `project.requires-python` フィールドで、プロジェクトでサポートされている Python バージョンを宣言できます。
 
-It is recommended to set a `requires-python` value:
+`requires-python` 値を設定することが推奨されます:
 
 ```toml title="pyproject.toml" hl_lines="4"
 [project]
@@ -14,74 +13,64 @@ version = "0.1.0"
 requires-python = ">=3.12"
 ```
 
-The Python version requirement determines the Python syntax that is allowed in the project and
-affects selection of dependency versions (they must support the same Python version range).
+Python バージョン要件により、プロジェクトで許可される Python 構文が決定され、依存関係バージョンの選択に影響します (同じ Python バージョン範囲をサポートする必要があります)。
 
-## Entry points
+## エントリーポイント {#entry-points}
 
-[Entry points](https://packaging.python.org/en/latest/specifications/entry-points/#entry-points) are
-the official term for an installed package to advertise interfaces. These include:
+[エントリポイント](https://packaging.python.org/en/latest/specifications/entry-points/#entry-points) は、インストールされたパッケージがインターフェースをアドバタイズするための正式な用語です。これには次のものが含まれます:
 
-- [Command line interfaces](#command-line-interfaces)
-- [Graphical user interfaces](#graphical-user-interfaces)
-- [Plugin entry points](#plugin-entry-points)
+- [コマンドラインインターフェース](#command-line-interfaces)
+- [グラフィカルユーザーインターフェース](#graphical-user-interfaces)
+- [プラグインのエントリポイント](#plugin-entry-points)
 
 !!! important
 
-    Using the entry point tables requires a [build system](#build-systems) to be defined.
+    エントリポイントテーブルを使用するには、[ビルドシステム](#build-systems) を定義する必要があります。
 
-### Command-line interfaces
+### コマンドラインインターフェース {#command-line-interfaces}
 
-Projects may define command line interfaces (CLIs) for the project in the `[project.scripts]` table
-of the `pyproject.toml`.
+プロジェクトは、`pyproject.toml` の `[project.scripts]` テーブルでプロジェクトのコマンドラインインターフェイス (CLI) を定義できます。
 
-For example, to declare a command called `hello` that invokes the `hello` function in the `example`
-module:
+たとえば、`example` モジュールの `hello` 関数を呼び出す `hello` というコマンドを宣言するには、次のようにします:
 
 ```toml title="pyproject.toml"
 [project.scripts]
 hello = "example:hello"
 ```
 
-Then, the command can be run from a console:
+次に、コンソールからコマンドを実行できます:
 
 ```console
 $ uv run hello
 ```
 
-### Graphical user interfaces
+### グラフィカルユーザーインターフェース {#graphical-user-interfaces}
 
-Projects may define graphical user interfaces (GUIs) for the project in the `[project.gui-scripts]`
-table of the `pyproject.toml`.
+プロジェクトでは、`pyproject.toml` の `[project.gui-scripts]` テーブルでプロジェクトのグラフィカルユーザーインターフェイス (GUI) を定義できます。
 
 !!! important
 
-    These are only different from [command-line interfaces](#command-line-interfaces) on Windows, where
-    they are wrapped by a GUI executable so they can be started without a console. On other platforms,
-    they behave the same.
+    これらは、Windows の [コマンドラインインターフェイス](#command-line-interfaces) とのみ異なります。Windows では、これらは GUI 実行可能ファイルでラップされているため、コンソールなしで起動できます。他のプラットフォームでも、同じように動作します。
 
-For example, to declare a command called `hello` that invokes the `app` function in the `example`
-module:
+たとえば、`example` モジュールの `app` 関数を呼び出す `hello` というコマンドを宣言するには、次のようにします:
 
 ```toml title="pyproject.toml"
 [project.gui-scripts]
 hello = "example:app"
 ```
 
-### Plugin entry points
+### プラグインのエントリポイント {#plugin-entry-points}
 
-Projects may define entry points for plugin discovery in the
-[`[project.entry-points]`](https://packaging.python.org/en/latest/guides/creating-and-discovering-plugins/#using-package-metadata)
-table of the `pyproject.toml`.
+プロジェクトは、`pyproject.toml` の [`[project.entry-points]`](https://packaging.python.org/en/latest/guides/creating-and-discovering-plugins/#using-package-metadata) テーブルでプラグイン検出のエントリ ポイントを定義できます。
 
-For example, to register the `example-plugin-a` package as a plugin for `example`:
+たとえば、`example-plugin-a` パッケージを `example` のプラグインとして登録するには、次のようにします。
 
 ```toml title="pyproject.toml"
 [project.entry-points.'example.plugins']
 a = "example_plugin_a"
 ```
 
-Then, in `example`, plugins would be loaded with:
+次に、`example` では、プラグインは次のようにロードされます:
 
 ```python title="example/__init__.py"
 from importlib.metadata import entry_points
@@ -92,114 +81,83 @@ for plugin in entry_points(group='example.plugins'):
 
 !!! note
 
-    The `group` key can be an arbitrary value, it does not need to include the package name or
-    "plugins". However, it is recommended to namespace the key by the package name to avoid
-    collisions with other packages.
+    `group` キーは任意の値にすることができ、パッケージ名や「プラグイン」を含める必要はありません。ただし、他のパッケージとの衝突を避けるために、キーをパッケージ名で名前空間化することをお勧めします。
 
-## Build systems
+## ビルドシステム {#build-systems}
 
-A build system determines how the project should be packaged and installed. Projects may declare and
-configure a build system in the `[build-system]` table of the `pyproject.toml`.
+ビルド システムは、プロジェクトをパッケージ化してインストールする方法を決定します。プロジェクトは、`pyproject.toml` の `[build-system]` テーブルでビルド システムを宣言および構成できます。
 
-uv uses the presence of a build system to determine if a project contains a package that should be
-installed in the project virtual environment. If a build system is not defined, uv will not attempt
-to build or install the project itself, just its dependencies. If a build system is defined, uv will
-build and install the project into the project environment.
+uv は、ビルド システムの存在に基づいて、プロジェクトにプロジェクト仮想環境にインストールする必要があるパッケージが含まれているかどうかを判断します。ビルド システムが定義されていない場合、uv はプロジェクト自体のビルドやインストールを試行せず、依存関係のみを試行します。ビルド システムが定義されている場合、uv はプロジェクトをビルドしてプロジェクト環境にインストールします。
 
-The `--build-backend` option can be provided to `uv init` to create a packaged project with an
-appropriate layout. The `--package` option can be provided to `uv init` to create a packaged project
-with the default build system.
+`--build-backend` オプションを `uv init` に指定すると、適切なレイアウトでパッケージ化されたプロジェクトを作成できます。`--package` オプションを `uv init` に指定すると、デフォルトのビルド システムでパッケージ化されたプロジェクトを作成できます。
 
 !!! note
 
-    While uv will not build and install the current project without a build system definition,
-    the presence of a `[build-system]` table is not required in other packages. For legacy reasons,
-    if a build system is not defined, then `setuptools.build_meta:__legacy__` is used to build the
-    package. Packages you depend on may not explicitly declare their build system but are still
-    installable. Similarly, if you add a dependency on a local package or install it with `uv pip`,
-    uv will always attempt to build and install it.
+    uv はビルド システム定義なしでは現在のプロジェクトをビルドおよびインストールしませんが、他のパッケージでは `[build-system]` テーブルの存在は必須ではありません。レガシーな理由から、ビルド システムが定義されていない場合は、パッケージのビルドに `setuptools.build_meta:__legacy__` が使用されます。依存するパッケージはビルド システムを明示的に宣言していない可能性がありますが、それでもインストール可能です。同様に、ローカル パッケージに依存関係を追加したり、`uv pip` を使用してインストールしたりすると、uv は常にそのパッケージをビルドしてインストールしようとします。
 
-### Build system options
+### ビルドシステムのオプション
 
-Build systems are used to power the following features:
+ビルドシステムは、次の機能を実現するために使用されます:
 
-- Including or excluding files from distributions
-- Editable install behavior
-- Dynamic project metadata
-- Compilation of native code
-- Vendoring shared libraries
+- 配布物にファイルを含めるか除外するか
+- 編集可能なインストール時の動作
+- 動的プロジェクトメタデータ
+- ネイティブコードのコンパイル
+- 共有ライブラリのベンダー化
 
-To configure these features, refer to the documentation of your chosen build system.
+これらの機能を構成するには、選択したビルド システムのドキュメントを参照してください。
 
-## Project packaging
+## プロジェクトのパッケージ化 {#project-packaging}
 
-As discussed in [build systems](#build-systems), a Python project must be built to be installed.
-This process is generally referred to as "packaging".
+[ビルド システム](#build-systems) で説明したように、Python プロジェクトをインストールするにはビルドする必要があります。このプロセスは一般に「パッケージ化」と呼ばれます。
 
-You probably need a package if you want to:
+以下のことを行う場合は、おそらくパッケージが必要になります:
 
-- Add commands to the project
-- Distribute the project to others
-- Use a `src` and `test` layout
-- Write a library
+- プロジェクトにコマンドを追加する
+- プロジェクトを他の人に配布する
+- `src` と `test` レイアウトを使用する
+- ライブラリを書く
 
-You probably _do not_ need a package if you are:
+次のような場合は、おそらくパッケージは必要ありません:
 
-- Writing scripts
-- Building a simple application
-- Using a flat layout
+- スクリプトの作成
+- シンプルなアプリケーションの構築
+- フラットレイアウトの使用
 
-While uv usually uses the declaration of a [build system](#build-systems) to determine if a project
-should be packaged, uv also allows overriding this behavior with the
-[`tool.uv.package`](../../reference/settings.md#package) setting.
+uv は通常、[ビルド システム](#build-systems) の宣言を使用してプロジェクトをパッケージ化するかどうかを決定しますが、uv では [`tool.uv.package`](../../reference/settings.md#package) 設定でこの動作をオーバーライドすることもできます。
 
-Setting `tool.uv.package = true` will force a project to be built and installed into the project
-environment. If no build system is defined, uv will use the setuptools legacy backend.
+`tool.uv.package = true` を設定すると、プロジェクトが強制的にビルドされ、プロジェクト環境にインストールされます。ビルド システムが定義されていない場合、uv は setuptools レガシー バックエンドを使用します。
 
-Setting `tool.uv.package = false` will force a project package _not_ to be built and installed into
-the project environment. uv will ignore a declared build system when interacting with the project.
+`tool.uv.package = false` を設定すると、プロジェクト パッケージはビルドされず、プロジェクト環境にインストールされません。uv は、プロジェクトと対話するときに宣言されたビルド システムを無視します。
 
-## Project environment path
+## プロジェクト環境パス {#project-environment-path}
 
-The `UV_PROJECT_ENVIRONMENT` environment variable can be used to configure the project virtual
-environment path (`.venv` by default).
+`UV_PROJECT_ENVIRONMENT` 環境変数を使用して、プロジェクトの仮想環境パス (デフォルトでは `.venv`) を設定できます。
 
-If a relative path is provided, it will be resolved relative to the workspace root. If an absolute
-path is provided, it will be used as-is, i.e., a child directory will not be created for the
-environment. If an environment is not present at the provided path, uv will create it.
+相対パスが指定されている場合は、ワークスペース ルートを基準として解決されます。絶対パスが指定されている場合は、そのまま使用されます。つまり、環境の子ディレクトリは作成されません。指定されたパスに環境が存在しない場合は、uv によって作成されます。
 
-This option can be used to write to the system Python environment, though it is not recommended.
-`uv sync` will remove extraneous packages from the environment by default and, as such, may leave
-the system in a broken state.
+このオプションはシステムの Python 環境に書き込むために使用できますが、推奨されません。`uv sync` はデフォルトで環境から不要なパッケージを削除するため、システムが壊れた状態になる可能性があります。
 
-To target the system environment, set `UV_PROJECT_ENVIRONMENT` to the prefix of the Python
-installation. For example, on Debian-based systems, this is usually `/usr/local`:
+システム環境をターゲットにするには、`UV_PROJECT_ENVIRONMENT` を Python インストールのプレフィックスに設定します。たとえば、Debian ベースのシステムでは、これは通常 `/usr/local` です:
 
 ```console
 $ python -c "import sysconfig; print(sysconfig.get_config_var('prefix'))"
 /usr/local
 ```
 
-To target this environment, you'd export `UV_PROJECT_ENVIRONMENT=/usr/local`.
+この環境をターゲットにするには、`UV_PROJECT_ENVIRONMENT=/usr/local` をエクスポートします。
 
 !!! important
 
-    If an absolute path is provided and the setting is used across multiple projects, the
-    environment will be overwritten by invocations in each project. This setting is only recommended
-    for use for a single project in CI or Docker images.
+    絶対パスが指定され、設定が複数のプロジェクトにわたって使用されている場合、環境は各プロジェクトでの呼び出しによって上書きされます。この設定は、CI または Docker イメージ内の単一のプロジェクトにのみ使用することをお勧めします。
 
 !!! note
 
-    By default, uv does not read the `VIRTUAL_ENV` environment variable during project operations.
-    A warning will be displayed if `VIRTUAL_ENV` is set to a different path than the project's
-    environment. The `--active` flag can be used to opt-in to respecting `VIRTUAL_ENV`. The
-    `--no-active` flag can be used to silence the warning.
+    デフォルトでは、uv はプロジェクト操作中に `VIRTUAL_ENV` 環境変数を読み取りません。`VIRTUAL_ENV` がプロジェクトの環境とは異なるパスに設定されている場合、警告が表示されます。`--active` フラグを使用すると、`VIRTUAL_ENV` を尊重するようにオプトインできます。`--no-active` フラグを使用すると、警告を黙らせることができます。
 
-## Limited resolution environments
+## 解決が限定された環境 {#limited-resolution-environments}
 
-If your project supports a more limited set of platforms or Python versions, you can constrain the
-set of solved platforms via the `environments` setting, which accepts a list of PEP 508 environment
-markers. For example, to constrain the lockfile to macOS and Linux, and exclude Windows:
+プロジェクトがサポートするプラットフォームや Python バージョンの数が限られている場合は、PEP 508 環境マーカーのリストを受け入れる `environments` 設定を使用して、解決するプラットフォームのセットを制限できます。たとえば、ロックファイルを macOS と Linux に制限し、Windows を除外するには、次のようにします。
 
 ```toml title="pyproject.toml"
 [tool.uv]
@@ -209,13 +167,11 @@ environments = [
 ]
 ```
 
-See the [resolution documentation](../resolution.md#limited-resolution-environments) for more.
+詳細については、[解決のドキュメント](../resolution.md#limited-resolution-environments)を参照してください。
 
-## Required environments
+## 必要な環境
 
-If your project _must_ support a specific platform or Python version, you can mark that platform as
-required via the `required-environments` setting. For example, to require that the project supports
-Intel macOS:
+プロジェクトが特定のプラットフォームまたは Python バージョンをサポートしなければならない場合は、`required-environments` 設定でそのプラットフォームを必須としてマークできます。たとえば、プロジェクトが Intel macOS をサポートすることを必須にするには、次のようにします。
 
 ```toml title="pyproject.toml"
 [tool.uv]
@@ -224,21 +180,15 @@ required-environments = [
 ]
 ```
 
-The `required-environments` setting is only relevant for packages that do not publish a source
-distribution (like PyTorch), as such packages can _only_ be installed on environments covered by the
-set of pre-built binary distributions (wheels) published by that package.
+`required-environments` 設定は、ソースディストリビューションを公開しないパッケージ (PyTorch など) にのみ関連します。このようなパッケージは、そのパッケージによって公開されるビルド済みバイナリディストリビューション (wheels) のセットによってカバーされる環境にのみインストールできるためです。
 
-See the [resolution documentation](../resolution.md#required-environments) for more.
+詳細については、[解決のドキュメント](../resolution.md#required-environments)を参照してください。
 
-## Build isolation
+## ビルドの分離 {#build-isolation}
 
-By default, uv builds all packages in isolated virtual environments, as per
-[PEP 517](https://peps.python.org/pep-0517/). Some packages are incompatible with build isolation,
-be it intentionally (e.g., due to the use of heavy build dependencies, mostly commonly PyTorch) or
-unintentionally (e.g., due to the use of legacy packaging setups).
+デフォルトでは、uv は [PEP 517](https://peps.python.org/pep-0517/) に従って、すべてのパッケージを分離された仮想環境でビルドします。一部のパッケージは、意図的 (たとえば、重いビルド依存関係 (ほとんどの場合 PyTorch が一般的) または意図的でない (たとえば、レガシー パッケージ設定の使用)) かにかかわらず、ビルド分離と互換性がありません。
 
-To disable build isolation for a specific dependency, add it to the `no-build-isolation-package`
-list in your `pyproject.toml`:
+特定の依存関係のビルド分離を無効にするには、`pyproject.toml` の `no-build-isolation-package` リストに追加します:
 
 ```toml title="pyproject.toml"
 [project]
@@ -253,10 +203,7 @@ dependencies = ["cchardet"]
 no-build-isolation-package = ["cchardet"]
 ```
 
-Installing packages without build isolation requires that the package's build dependencies are
-installed in the project environment _prior_ to installing the package itself. This can be achieved
-by separating out the build dependencies and the packages that require them into distinct extras.
-For example:
+ビルド分離なしでパッケージをインストールするには、パッケージ自体をインストールする前に、パッケージのビルド依存関係をプロジェクト環境にインストールする必要があります。これは、ビルド依存関係とそれを必要とするパッケージを個別の追加項目に分離することで実現できます。例:
 
 ```toml title="pyproject.toml"
 [project]
@@ -275,7 +222,7 @@ compile = ["cchardet"]
 no-build-isolation-package = ["cchardet"]
 ```
 
-Given the above, a user would first sync the `build` dependencies:
+上記の場合、ユーザーはまず `build` 依存関係を同期します:
 
 ```console
 $ uv sync --extra build
@@ -284,7 +231,7 @@ $ uv sync --extra build
  + setuptools==73.0.1
 ```
 
-Followed by the `compile` dependencies:
+`compile` 依存関係が続きます:
 
 ```console
 $ uv sync --extra compile
@@ -293,21 +240,16 @@ $ uv sync --extra compile
  - setuptools==73.0.1
 ```
 
-Note that `uv sync --extra compile` would, by default, uninstall the `cython` and `setuptools`
-packages. To instead retain the build dependencies, include both extras in the second `uv sync`
-invocation:
+`uv sync --extra compile` は、デフォルトでは `cython` および `setuptools` パッケージをアンインストールすることに注意してください。代わりにビルドの依存関係を保持するには、2 回目の `uv sync` 呼び出しで両方の追加パッケージを含めます。
 
 ```console
 $ uv sync --extra build
 $ uv sync --extra build --extra compile
 ```
 
-Some packages, like `cchardet` above, only require build dependencies for the _installation_ phase
-of `uv sync`. Others, like `flash-attn`, require their build dependencies to be present even just to
-resolve the project's lockfile during the _resolution_ phase.
+上記の `cchardet` のような一部のパッケージでは、`uv sync` の _installation_ フェーズでのみビルド依存関係が必要です。`flash-attn` のような他のパッケージでは、_resolution_ フェーズでプロジェクトのロックファイルを解決するためにもビルド依存関係が存在する必要があります。
 
-In such cases, the build dependencies must be installed prior to running any `uv lock` or `uv sync`
-commands, using the lower lower-level `uv pip` API. For example, given:
+このような場合、`uv lock` または `uv sync` コマンドを実行する前に、下位レベルの `uv pip` API を使用してビルド依存関係をインストールする必要があります。たとえば、次のようになります:
 
 ```toml title="pyproject.toml"
 [project]
@@ -322,7 +264,7 @@ dependencies = ["flash-attn"]
 no-build-isolation-package = ["flash-attn"]
 ```
 
-You could run the following sequence of commands to sync `flash-attn`:
+`flash-attn` を同期するには、次のコマンド シーケンスを実行できます:
 
 ```console
 $ uv venv
@@ -330,10 +272,7 @@ $ uv pip install torch setuptools
 $ uv sync
 ```
 
-Alternatively, you can provide the `flash-attn` metadata upfront via the
-[`dependency-metadata`](../../reference/settings.md#dependency-metadata) setting, thereby forgoing
-the need to build the package during the dependency resolution phase. For example, to provide the
-`flash-attn` metadata upfront, include the following in your `pyproject.toml`:
+あるいは、[`dependency-metadata`](../../reference/settings.md#dependency-metadata) 設定を介して `flash-attn` メタデータを事前に提供することもできます。これにより、依存関係解決フェーズでパッケージをビルドする必要がなくなります。たとえば、`flash-attn` メタデータを事前に提供するには、`pyproject.toml` に次の内容を含めます:
 
 ```toml title="pyproject.toml"
 [[tool.uv.dependency-metadata]]
@@ -344,16 +283,11 @@ requires-dist = ["torch", "einops"]
 
 !!! tip
 
-    To determine the package metadata for a package like `flash-attn`, navigate to the appropriate Git repository,
-    or look it up on [PyPI](https://pypi.org/project/flash-attn) and download the package's source distribution.
-    The package requirements can typically be found in the `setup.py` or `setup.cfg` file.
+    `flash-attn` のようなパッケージのパッケージ メタデータを確認するには、適切な Git リポジトリに移動する、または [PyPI](https://pypi.org/project/flash-attn) で検索してパッケージのソース配布をダウンロードします。パッケージ要件は通常、`setup.py` または `setup.cfg` ファイルにあります。
 
-    (If the package includes a built distribution, you can unzip it to find the `METADATA` file; however, the presence
-    of a built distribution would negate the need to provide the metadata upfront, since it would already be available
-    to uv.)
+    (パッケージにビルド済みのディストリビューションが含まれている場合は、それを解凍して `METADATA` ファイルを見つけることができます。ただし、ビルド済みのディストリビューションが存在すると、メタデータがすでに uv で使用できるため、事前にメタデータを提供する必要がなくなります。)
 
-Once included, you can again use the two-step `uv sync` process to install the build dependencies.
-Given the following `pyproject.toml`:
+一度含めると、2 段階の `uv sync` プロセスを使用してビルド依存関係をインストールできます。次の `pyproject.toml` があるとします:
 
 ```toml title="pyproject.toml"
 [project]
@@ -377,7 +311,7 @@ version = "2.6.3"
 requires-dist = ["torch", "einops"]
 ```
 
-You could run the following sequence of commands to sync `flash-attn`:
+`flash-attn` を同期するには、次のコマンド シーケンスを実行できます:
 
 ```console
 $ uv sync --extra build
@@ -386,28 +320,19 @@ $ uv sync --extra build --extra compile
 
 !!! note
 
-    The `version` field in `tool.uv.dependency-metadata` is optional for registry-based
-    dependencies (when omitted, uv will assume the metadata applies to all versions of the package),
-    but _required_ for direct URL dependencies (like Git dependencies).
+    `tool.uv.dependency-metadata` の `version` フィールドは、レジストリベースの依存関係ではオプションです (省略すると、uv はメタデータがパッケージのすべてのバージョンに適用されると想定します) が、直接 URL 依存関係 (Git 依存関係など) では必須です。
 
-## Editable mode
+## 編集可能モード
 
-By default, the project will be installed in editable mode, such that changes to the source code are
-immediately reflected in the environment. `uv sync` and `uv run` both accept a `--no-editable` flag,
-which instructs uv to install the project in non-editable mode. `--no-editable` is intended for
-deployment use-cases, such as building a Docker container, in which the project should be included
-in the deployed environment without a dependency on the originating source code.
+デフォルトでは、プロジェクトは編集可能モードでインストールされるため、ソース コードへの変更はすぐに環境に反映されます。`uv sync` と `uv run` はどちらも `--no-editable` フラグを受け入れます。このフラグは、uv にプロジェクトを編集不可モードでインストールするように指示します。`--no-editable` は、Docker コンテナの構築など、プロジェクトを元のソース コードに依存せずにデプロイされた環境に含める必要があるデプロイメント ユースケースを対象としています。
 
-## Conflicting dependencies
+## 競合する依存関係 {#conflicting-dependencies}
 
-uv requires that all optional dependencies ("extras") declared by the project are compatible with
-each other and resolves all optional dependencies together when creating the lockfile.
+uv では、プロジェクトによって宣言されたすべてのオプションの依存関係 (「extras」) が相互に互換性があることが要求され、ロックファイルを作成するときにすべてのオプションの依存関係が一緒に解決されます。
 
-If optional dependencies declared in one extra are not compatible with those in another extra, uv
-will fail to resolve the requirements of the project with an error.
+あるエクストラで宣言されたオプションの依存関係が別のエクストラの依存関係と互換性がない場合、uv はエラーを出してプロジェクトの要件を解決できません。
 
-To work around this, uv supports declaring conflicting extras. For example, consider two sets of
-optional dependencies that conflict with one another:
+これを回避するために、uv は競合する追加要素の宣言をサポートしています。たとえば、互いに競合する 2 つのオプション依存関係セットを考えてみましょう:
 
 ```toml title="pyproject.toml"
 [project.optional-dependencies]
@@ -415,7 +340,7 @@ extra1 = ["numpy==2.1.2"]
 extra2 = ["numpy==2.0.0"]
 ```
 
-If you run `uv lock` with the above dependencies, resolution will fail:
+上記の依存関係で `uv lock` を実行すると、解決は失敗します:
 
 ```console
 $ uv lock
@@ -425,8 +350,7 @@ $ uv lock
       And because your project requires myproject[extra1] and myproject[extra2], we can conclude that your projects's requirements are unsatisfiable.
 ```
 
-But if you specify that `extra1` and `extra2` are conflicting, uv will resolve them separately.
-Specify conflicts in the `tool.uv` section:
+しかし、`extra1` と `extra2` が競合していると指定した場合、uv はそれらを個別に解決します。`tool.uv` セクションで競合を指定します:
 
 ```toml title="pyproject.toml"
 [tool.uv]
@@ -438,8 +362,7 @@ conflicts = [
 ]
 ```
 
-Now, running `uv lock` will succeed. Note though, that now you cannot install both `extra1` and
-`extra2` at the same time:
+これで、`uv lock` の実行は成功します。ただし、`extra1` と `extra2` の両方を同時にインストールすることはできないことに注意してください。
 
 ```console
 $ uv sync --extra extra1 --extra extra2
@@ -447,10 +370,9 @@ Resolved 3 packages in 14ms
 error: extra `extra1`, extra `extra2` are incompatible with the declared conflicts: {`myproject[extra1]`, `myproject[extra2]`}
 ```
 
-This error occurs because installing both `extra1` and `extra2` would result in installing two
-different versions of a package into the same environment.
+このエラーは、`extra1` と `extra2` の両方をインストールすると、同じ環境に 2 つの異なるバージョンのパッケージがインストールされるため発生します。
 
-The above strategy for dealing with conflicting extras also works with dependency groups:
+競合する追加機能に対処するための上記の戦略は、依存関係グループでも機能します:
 
 ```toml title="pyproject.toml"
 [dependency-groups]
@@ -466,4 +388,4 @@ conflicts = [
 ]
 ```
 
-The only difference with conflicting extras is that you need to use `group` instead of `extra`.
+競合する追加機能との唯一の違いは、`extra` ではなく `group` を使用する必要があることです。

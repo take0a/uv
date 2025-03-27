@@ -1,26 +1,16 @@
-# Building distributions
+# 配布物のビルド
 
-To distribute your project to others (e.g., to upload it to an index like PyPI), you'll need to
-build it into a distributable format.
+プロジェクトを他の人に配布するには (たとえば、PyPI などのインデックスにアップロードする)、配布可能な形式でビルドする必要があります。
 
-Python projects are typically distributed as both source distributions (sdists) and binary
-distributions (wheels). The former is typically a `.tar.gz` or `.zip` file containing the project's
-source code along with some additional metadata, while the latter is a `.whl` file containing
-pre-built artifacts that can be installed directly.
+Python プロジェクトは通常、ソース ディストリビューション (sdists) とバイナリ ディストリビューション (wheels) の両方として配布されます。前者は通常、プロジェクトのソース コードと追加のメタデータを含む `.tar.gz` または `.zip` ファイルであり、後者は直接インストールできるビルド済みの成果物を含む `.whl` ファイルです。
 
 !!! important
 
-    When using `uv build`, uv acts as a [build frontend](https://peps.python.org/pep-0517/#terminology-and-goals)
-    and only determines the Python version to use and invokes the build backend. The details of
-    the builds, such as the included files and the distribution filenames, are determined by the build
-    backend, as defined in [`[build-system]`](./config.md#build-systems). Information about build
-    configuration can be found in the respective tool's documentation.
+    `uv build` を使用する場合、uv は [ビルド フロントエンド](https://peps.python.org/pep-0517/#terminology-and-goals) として機能し、使用する Python バージョンを決定してビルド バックエンドを呼び出すだけです。ビルドの詳細 (含まれるファイルや配布ファイル名など) は、[`[build-system]`](./config.md#build-systems) で定義されているように、ビルド バックエンドによって決定されます。ビルド構成に関する情報は、それぞれのツールのドキュメントに記載されています。
 
-## Using `uv build`
+## `uv build` を使用する
 
-`uv build` can be used to build both source distributions and binary distributions for your project.
-By default, `uv build` will build the project in the current directory, and place the built
-artifacts in a `dist/` subdirectory:
+`uv build` は、プロジェクトのソース ディストリビューションとバイナリ ディストリビューションの両方をビルドするために使用できます。デフォルトでは、`uv build` は現在のディレクトリにプロジェクトをビルドし、ビルドされた成果物を `dist/` サブディレクトリに配置します:
 
 ```console
 $ uv build
@@ -29,30 +19,23 @@ example-0.1.0-py3-none-any.whl
 example-0.1.0.tar.gz
 ```
 
-You can build the project in a different directory by providing a path to `uv build`, e.g.,
-`uv build path/to/project`.
+`uv build` へのパス (例: `uv build path/to/project`) を指定することで、別のディレクトリにプロジェクトをビルドできます。
 
-`uv build` will first build a source distribution, and then build a binary distribution (wheel) from
-that source distribution.
+`uv build` は最初にソースディストリビューションをビルドし、次にそのソースディストリビューションからバイナリディストリビューション (wheel) をビルドします。
 
-You can limit `uv build` to building a source distribution with `uv build --sdist`, a binary
-distribution with `uv build --wheel`, or build both distributions from source with
-`uv build --sdist --wheel`.
+`uv build` を、`uv build --sdist` でソース ディストリビューションのビルド、`uv build --wheel` でバイナリ ディストリビューションのビルドに制限することも、`uv build --sdist --wheel` でソースから両方のディストリビューションをビルドすることもできます。
 
-## Build constraints
+## ビルドの制約
 
-`uv build` accepts `--build-constraint`, which can be used to constrain the versions of any build
-requirements during the build process. When coupled with `--require-hashes`, uv will enforce that
-the requirement used to build the project match specific, known hashes, for reproducibility.
+`uv build` は `--build-constraint` を受け入れます。これは、ビルドプロセス中にビルド要件のバージョンを制限するために使用できます。`--require-hashes` と組み合わせると、uv は、再現性を確保するために、プロジェクトのビルドに使用される要件が特定の既知のハッシュと一致することを強制します。
 
-For example, given the following `constraints.txt`:
+たとえば、次の `constraints.txt` があるとします:
 
 ```text
 setuptools==68.2.2 --hash=sha256:b454a35605876da60632df1a60f736524eb73cc47bbc9f3f1ef1b644de74fd2a
 ```
 
-Running the following would build the project with the specified version of `setuptools`, and verify
-that the downloaded `setuptools` distribution matches the specified hash:
+以下を実行すると、指定されたバージョンの `setuptools` を使用してプロジェクトがビルドされ、ダウンロードされた `setuptools` ディストリビューションが指定されたハッシュと一致することが確認されます:
 
 ```console
 $ uv build --build-constraint constraints.txt --require-hashes

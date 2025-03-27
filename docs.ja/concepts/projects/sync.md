@@ -1,209 +1,165 @@
-# Locking and syncing
+# ロックと同期
 
-Locking is the process of resolving your project's dependencies into a
-[lockfile](./layout.md#the-lockfile). Syncing is the process of installing a subset of packages from
-the lockfile into the [project environment](./layout.md#the-project-environment).
+ロックとは、プロジェクトの依存関係を [ロックファイル](./layout.md#the-lockfile) に解決するプロセスです。同期とは、ロックファイルからパッケージのサブセットを [プロジェクト環境](./layout.md#the-project-environment) にインストールするプロセスです。
 
-## Automatic lock and sync
+## 自動ロックと同期 {#automatic-lock-and-sync}
 
-Locking and syncing are _automatic_ in uv. For example, when `uv run` is used, the project is locked
-and synced before invoking the requested command. This ensures the project environment is always
-up-to-date. Similarly, commands which read the lockfile, such as `uv tree`, will automatically
-update it before running.
+ロックと同期は uv では _自動_ です。たとえば、`uv run` を使用すると、要求されたコマンドを呼び出す前にプロジェクトがロックされ、同期されます。これにより、プロジェクト環境が常に最新の状態になります。同様に、`uv tree` などのロックファイルを読み取るコマンドは、実行前に自動的に更新します。
 
-To disable automatic locking, use the `--locked` option:
+自動ロックを無効にするには、`--locked` オプションを使用します:
 
 ```console
 $ uv run --locked ...
 ```
 
-If the lockfile is not up-to-date, uv will raise an error instead of updating the lockfile.
+ロックファイルが最新でない場合、 uv はロックファイルを更新する代わりにエラーを発生させます。
 
-To use the lockfile without checking if it is up-to-date, use the `--frozen` option:
+ロックファイルが最新かどうかを確認せずに使用するには、`--frozen` オプションを使用します:
 
 ```console
 $ uv run --frozen ...
 ```
 
-Similarly, to run a command without checking if the environment is up-to-date, use the `--no-sync`
-option:
+同様に、環境が最新かどうかを確認せずにコマンドを実行するには、`--no-sync` オプションを使用します:
 
 ```console
 $ uv run --no-sync ...
 ```
 
-## Checking if the lockfile is up-to-date
+## ロックファイルが最新かどうかの確認
 
-When considering if the lockfile is up-to-date, uv will check if it matches the project metadata.
-For example, if you add a dependency to your `pyproject.toml`, the lockfile will be considered
-outdated. Similarly, if you change the version constraints for a dependency such that the locked
-version is excluded, the lockfile will be considered outdated. However, if you change the version
-constraints such that the existing locked version is still included, the lockfile will still be
-considered up-to-date.
+ロックファイルが最新かどうかを検討する際、uv はそれがプロジェクト メタデータと一致するかどうかを確認します。たとえば、`pyproject.toml` に依存関係を追加すると、ロックファイルは古いものと見なされます。同様に、依存関係のバージョン制約を変更してロックされたバージョンを除外すると、ロックファイルは古いものと見なされます。ただし、既存のロックされたバージョンがまだ含まれるようにバージョン制約を変更すると、ロックファイルは最新であると見なされます。
 
-You can check if the lockfile is up-to-date by passing the `--check` flag to `uv lock`:
+`--check` フラグを `uv lock` に渡すことで、ロックファイルが最新かどうかを確認できます:
 
 ```console
 $ uv lock --check
 ```
 
-This is equivalent to the `--locked` flag for other commands.
+これは他のコマンドの `--locked` フラグと同等です。
 
 !!! important
 
-    uv will not consider lockfiles outdated when new versions of packages are released — the lockfile
-    needs to be explicitly updated if you want to upgrade dependencies. See the documentation on
-    [upgrading locked package versions](#upgrading-locked-package-versions) for details.
+    uv は、パッケージの新しいバージョンがリリースされてもロックファイルが古いとは見なしません。依存関係をアップグレードする場合は、ロックファイルを明示的に更新する必要があります。詳細については、[ロックされたパッケージのバージョンのアップグレード](#upgrading-locked-package-versions)に関するドキュメントを参照してください。
 
-## Creating the lockfile
+## ロックファイルの作成
 
-While the lockfile is created [automatically](#automatic-lock-and-sync), the lockfile may also be
-explicitly created or updated using `uv lock`:
+ロックファイルは [自動的に](#automatic-lock-and-sync) 作成されますが、`uv lock` を使用してロックファイルを明示的に作成または更新することもできます:
 
 ```console
 $ uv lock
 ```
 
-## Syncing the environment
+## 環境の同期
 
-While the environment is synced [automatically](#automatic-lock-and-sync), it may also be explicitly
-synced using `uv sync`:
+環境は [自動的に](#automatic-lock-and-sync) 同期されますが、`uv sync` を使用して明示的に同期することもできます:
 
 ```console
 $ uv sync
 ```
 
-Syncing the environment manually is especially useful for ensuring your editor has the correct
-versions of dependencies.
+環境を手動で同期することは、エディターに正しいバージョンの依存関係があることを確認するのに特に役立ちます。
 
-### Editable installation
+### 編集可能なインストール
 
-When the environment is synced, uv will install the project (and other workspace members) as
-_editable_ packages, such that re-syncing is not necessary for changes to be reflected in the
-environment.
+環境が同期されると、uv はプロジェクト (および他のワークスペース メンバー) を _編集可能な_ パッケージとしてインストールするため、変更を環境に反映するために再同期する必要はありません。
 
-To opt-out of this behavior, use the `--no-editable` option.
+この動作をオプトアウトするには、`--no-editable` オプションを使用します。
 
 !!! note
 
-    If the project does not define a build system, it will not be installed.
-    See the [build systems](./config.md#build-systems) documentation for details.
+    プロジェクトでビルド システムが定義されていない場合はインストールされません。詳細については、[ビルド システム](./config.md#build-systems) のドキュメントを参照してください。
 
-### Retaining extraneous packages
+### 不要なパッケージの保持
 
-Syncing is "exact" by default, which means it will remove any packages that are not present in the
-lockfile.
+同期はデフォルトでは「正確」に行われます。つまり、ロックファイルに存在しないパッケージはすべて削除されます。
 
-To retain extraneous packages, use the `--inexact` option:
+不要なパッケージを保持するには、`--inexact` オプションを使用します:
 
 ```console
 $ uv sync --inexact
 ```
 
-### Syncing optional dependencies
+### オプションの依存関係の同期
 
-uv reads optional dependencies from the `[project.optional-dependencies]` table. These are
-frequently referred to as "extras".
+uv は `[project.optional-dependencies]` テーブルからオプションの依存関係を読み取ります。これらは、多くの場合「extras」と呼ばれます。
 
-uv does not sync extras by default. Use the `--extra` option to include an extra.
+uv はデフォルトでは追加情報を同期しません。追加情報を含めるには `--extra` オプションを使用します。
 
 ```console
 $ uv sync --extra foo
 ```
 
-To quickly enable all extras, use the `--all-extras` option.
+すべての追加機能をすばやく有効にするには、`--all-extras` オプションを使用します。
 
-See the [optional dependencies](./dependencies.md#optional-dependencies) documentation for details
-on how to manage optional dependencies.
+オプションの依存関係を管理する方法の詳細については、[オプションの依存関係](./dependencies.md#optional-dependencies)のドキュメントを参照してください。
 
-### Syncing development dependencies
+### 開発依存関係の同期
 
-uv reads development dependencies from the `[dependency-groups]` table (as defined in
-[PEP 735](https://peps.python.org/pep-0735/)).
+uv は、開発依存関係を `[dependency-groups]` テーブルから読み取ります ([PEP 735](https://peps.python.org/pep-0735/) で定義されています)。
 
-The `dev` group is special-cased and synced by default. See the
-[default groups](./dependencies.md#default-groups) documentation for details on changing the
-defaults.
+`dev` グループは特別なケースであり、デフォルトで同期されます。デフォルトの変更の詳細については、[デフォルト グループ](./dependencies.md#default-groups) のドキュメントを参照してください。
 
-The `--no-dev` flag can be used to exclude the `dev` group.
+`--no-dev` フラグを使用すると、`dev` グループを除外できます。
 
-The `--only-dev` flag can be used to install the `dev` group _without_ the project and its
-dependencies.
+`--only-dev` フラグを使用すると、プロジェクトとその依存関係なしで `dev` グループをインストールできます。
 
-Additional groups can be included or excluded with the `--all-groups`, `--no-default-groups`,
-`--group <name>`, `--only-group <name>`, and `--no-group <name>` options. The semantics of
-`--only-group` are the same as `--only-dev`, the project will not be included. However,
-`--only-group` will also exclude default groups.
+`--all-groups`、`--no-default-groups`、`--group <name>`、`--only-group <name>`、および `--no-group <name>` オプションを使用して、追加のグループを含めたり除外したりできます。`--only-group` のセマンティクスは `--only-dev` と同じで、プロジェクトは含まれません。ただし、`--only-group` はデフォルト グループも除外します。
 
-Group exclusions always take precedence over inclusions, so given the command:
+グループの除外は常に包含よりも優先されるため、次のコマンドを実行します:
 
 ```
 $ uv sync --no-group foo --group foo
 ```
 
-The `foo` group would not be installed.
+`foo` グループはインストールされません。
 
-See the [development dependencies](./dependencies.md#development-dependencies) documentation for
-details on how to manage development dependencies.
+開発依存関係を管理する方法の詳細については、[開発依存関係](./dependencies.md#development-dependencies)のドキュメントを参照してください。
 
-## Upgrading locked package versions
+## ロックされたパッケージバージョンのアップグレード {#upgrading-locked-package-versions}
 
-With an existing `uv.lock` file, uv will prefer the previously locked versions of packages when
-running `uv sync` and `uv lock`. Package versions will only change if the project's dependency
-constraints exclude the previous, locked version.
+`uv.lock` ファイルが存在する場合、uv は `uv sync` および `uv lock` を実行するときに、以前にロックされたバージョンのパッケージを優先します。パッケージのバージョンは、プロジェクトの依存関係の制約によって以前のロックされたバージョンが除外される場合にのみ変更されます。
 
-To upgrade all packages:
+すべてのパッケージをアップグレードするには:
 
 ```console
 $ uv lock --upgrade
 ```
 
-To upgrade a single package to the latest version, while retaining the locked versions of all other
-packages:
+他のすべてのパッケージのロックされたバージョンを保持しながら、単一のパッケージを最新バージョンにアップグレードするには:
 
 ```console
 $ uv lock --upgrade-package <package>
 ```
 
-To upgrade a single package to a specific version:
+単一のパッケージを特定のバージョンにアップグレードするには:
 
 ```console
 $ uv lock --upgrade-package <package>==<version>
 ```
 
-In all cases, upgrades are limited to the project's dependency constraints. For example, if the
-project defines an upper bound for a package then an upgrade will not go beyond that version.
+いずれの場合も、アップグレードはプロジェクトの依存関係の制約に制限されます。たとえば、プロジェクトでパッケージの上限が定義されている場合、アップグレードはそのバージョンを超えることはできません。
 
 !!! note
 
-    uv applies similar logic to Git dependencies. For example, if a Git dependency references
-    the `main` branch, uv will prefer the locked commit SHA in an existing `uv.lock` file over
-    the latest commit on the `main` branch, unless the `--upgrade` or `--upgrade-package` flags
-    are used.
+    uv は Git 依存関係に同様のロジックを適用します。たとえば、Git 依存関係が `main` ブランチを参照する場合、`--upgrade` または `--upgrade-package` フラグが使用されていない限り、uv は `main` ブランチの最新のコミットよりも、既存の `uv.lock` ファイル内のロックされたコミット SHA を優先します。
 
-These flags can also be provided to `uv sync` or `uv run` to update the lockfile _and_ the
-environment.
+これらのフラグは、ロックファイルと環境を更新するために `uv sync` または `uv run` に提供することもできます。
 
-## Exporting the lockfile
+## ロックファイルのエクスポート
 
-If you need to integrate uv with other tools or workflows, you can export `uv.lock` to the
-`requirements.txt` format with `uv export --format requirements-txt`. The generated
-`requirements.txt` file can then be installed via `uv pip install`, or with other tools like `pip`.
+uv を他のツールやワークフローと統合する必要がある場合は、`uv export --format requirements-txt` を使用して `uv.lock` を `requirements.txt` 形式にエクスポートできます。生成された `requirements.txt` ファイルは、`uv pip install` または `pip` などの他のツールを使用してインストールできます。
 
-In general, we recommend against using both a `uv.lock` and a `requirements.txt` file. If you find
-yourself exporting a `uv.lock` file, consider opening an issue to discuss your use case.
+一般的に、`uv.lock` ファイルと `requirements.txt` ファイルの両方を使用することはお勧めしません。`uv.lock` ファイルをエクスポートする場合は、問題を報告して使用事例について話し合うことを検討してください。
 
-## Partial installations
+## 部分的なインストール
 
-Sometimes it's helpful to perform installations in multiple steps, e.g., for optimal layer caching
-while building a Docker image. `uv sync` has several flags for this purpose.
+場合によっては、Docker イメージの構築中にレイヤー キャッシュを最適化するなど、複数のステップでインストールを実行すると便利なことがあります。`uv sync` には、この目的のためのフラグがいくつかあります。
 
-- `--no-install-project`: Do not install the current project
-- `--no-install-workspace`: Do not install any workspace members, including the root project
-- `--no-install-package <NO_INSTALL_PACKAGE>`: Do not install the given package(s)
+- `--no-install-project`: 現在のプロジェクトをインストールしない
+- `--no-install-workspace`: ルートプロジェクトを含むワークスペースメンバーをインストールしないでください
+- `--no-install-package <NO_INSTALL_PACKAGE>`: 指定されたパッケージをインストールしない
 
-When these options are used, all of the dependencies of the target are still installed. For example,
-`--no-install-project` will omit the _project_ but not any of its dependencies.
+これらのオプションを使用すると、ターゲットのすべての依存関係は引き続きインストールされます。たとえば、`--no-install-project` は _プロジェクト_ を省略しますが、その依存関係は省略しません。
 
-If used improperly, these flags can result in a broken environment since a package can be missing
-its dependencies.
+これらのフラグを不適切に使用すると、パッケージの依存関係が失われることがあるため、環境が壊れる可能性があります。
